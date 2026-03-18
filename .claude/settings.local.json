@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm create:*)",
+      "Bash(printf 'No\\\\nNo\\\\n')",
+      "Bash(yes n:*)",
+      "Bash(mv beauty-lash/.gitignore .)",
+      "Bash(mv beauty-lash/README.md .)",
+      "Bash(mv beauty-lash/eslint.config.mjs .)",
+      "Bash(mv beauty-lash/next-env.d.ts .)",
+      "Bash(mv beauty-lash/next.config.ts .)",
+      "Bash(rm -rf node_modules)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(yes \"\")",
+      "Bash(pnpm dlx:*)"
+    ]
+  }
+}
