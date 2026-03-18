@@ -4,6 +4,7 @@ import { CalendarDays } from 'lucide-react';
 import { getMyReservations } from '@/lib/actions/reservation';
 import { getCurrentUserProfile } from '@/lib/actions/auth';
 import { ReservationCard } from '@/components/domain/reservation/ReservationCard';
+import { ProfileEditForm } from './ProfileEditForm';
 
 export const metadata: Metadata = {
   title: '마이페이지',
@@ -19,6 +20,14 @@ export default async function MyPage() {
         <h1 className="font-display text-charcoal text-2xl">마이페이지</h1>
         {profile && <p className="font-ui text-gray mt-1 text-sm">{profile.name}님, 안녕하세요.</p>}
       </div>
+
+      {/* Profile Edit */}
+      {profile && (
+        <section className="mb-10">
+          <h2 className="font-ui text-charcoal mb-4 text-lg font-semibold">프로필 수정</h2>
+          <ProfileEditForm profile={profile} />
+        </section>
+      )}
 
       {/* Reservations */}
       <section>
