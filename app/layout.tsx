@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Cormorant_Garamond, DM_Sans, Noto_Sans_KR } from 'next/font/google';
+import { AuthProvider } from '@/components/providers/AuthProvider';
 import './globals.css';
 
 const playfairDisplay = Playfair_Display({
@@ -46,7 +47,7 @@ export default function RootLayout({
       <body
         className={`${playfairDisplay.variable} ${cormorantGaramond.variable} ${dmSans.variable} ${notoSansKR.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

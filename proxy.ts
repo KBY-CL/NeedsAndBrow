@@ -33,9 +33,21 @@ export async function proxy(request: NextRequest) {
   // 관리자 경로 보호
   if (ADMIN_ROUTES.some((route) => pathname.startsWith(route))) {
     if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('returnUrl', pathname);
+      return NextResponse.redirect(loginUrl);
     }
-    // TODO: Phase 1-3에서 관리자 role 체크 추가
+
+    // 관리자 role 검증 (Supabase DB 조회)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
   }
 
   // 인증 필요 경로
