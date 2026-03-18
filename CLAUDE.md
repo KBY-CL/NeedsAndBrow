@@ -11,7 +11,7 @@
 
 ## 기술 스택
 
-- **Framework**: Next.js 14 (App Router) + TypeScript
+- **Framework**: Next.js 16 (App Router) + TypeScript + React 19
 - **Styling**: Tailwind CSS + shadcn/ui
 - **Backend**: Supabase (PostgreSQL + Auth + Storage + Edge Functions + Realtime)
 - **State**: Zustand (전역), React Hook Form + Zod (폼)

@@ -12,13 +12,20 @@ description: 'Beauty Lash & Brow 프로젝트 관리 가이드. 구현 순서(Ph
 기초 인프라와 핵심 사용자 여정을 구현한다.
 
 ```
-✅ 1-1. 프로젝트 초기 셋업
-   - Next.js 14 프로젝트 생성 (pnpm create next-app)
-   - Tailwind CSS + shadcn/ui 설정
-   - Supabase 프로젝트 연결
-   - 디자인 토큰 설정 (tailwind.config.ts)
-   - 폰트 로딩 (Google Fonts)
-   - 폴더 구조 생성
+☑ 1-1. 프로젝트 초기 셋업 【완료】
+   - Next.js 16 + React 19 프로젝트 생성
+   - Tailwind CSS v4 + shadcn/ui (Radix) 설정
+   - Supabase 프로젝트 연결 (.env.local)
+   - 디자인 토큰 설정 (app/globals.css @theme 블록 — Tailwind v4 방식)
+   - 폰트 로딩: Playfair Display, Cormorant Garamond, DM Sans, Noto Sans KR
+   - 폴더 구조 생성 (.gitkeep)
+   - ESLint Flat Config, Prettier, TypeScript strict 강화
+   - vitest + testing-library 설정
+   - husky pre-commit 훅 (typecheck + lint-staged)
+   - Supabase 클라이언트 3종 (browser/server/admin)
+   - middleware.ts (보호 경로 인증)
+   - vercel.json (icn1 서울 리전)
+   - GitHub main 브랜치 push 완료
 
 ✅ 1-2. DB 스키마 + RLS
    - 전체 테이블 마이그레이션 작성
