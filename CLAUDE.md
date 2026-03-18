@@ -95,16 +95,17 @@ beauty-lash/
 각 도메인별 상세 가이드는 `.claude/skills/` 에 정리되어 있다.
 **새로운 작업을 시작할 때 해당 스킬의 SKILL.md를 먼저 읽고** 지침을 따를 것.
 
-| 스킬             | 경로                                         | 트리거                                                 |
-| ---------------- | -------------------------------------------- | ------------------------------------------------------ |
-| UI 디자인 시스템 | `.claude/skills/ui-design/SKILL.md`          | 컴포넌트 스타일링, 색상, 타이포, 레이아웃, 반응형 작업 |
-| 프론트엔드       | `.claude/skills/frontend/SKILL.md`           | 페이지, 컴포넌트, 라우팅, 상태관리, 폼 처리            |
-| 백엔드 (DDD)     | `.claude/skills/backend/SKILL.md`            | API, Server Actions, 비즈니스 로직, Edge Functions     |
-| 데이터베이스     | `.claude/skills/database/SKILL.md`           | 스키마, 마이그레이션, RLS, 쿼리 최적화                 |
-| 인프라/배포      | `.claude/skills/infrastructure/SKILL.md`     | Vercel, Supabase 설정, 환경변수, CI/CD                 |
-| 개발 환경        | `.claude/skills/dev-environment/SKILL.md`    | 프로젝트 초기 셋업, 의존성, 로컬 개발 환경             |
-| 테스트           | `.claude/skills/testing/SKILL.md`            | 단위/통합/E2E 테스트 작성                              |
-| 프로젝트 관리    | `.claude/skills/project-management/SKILL.md` | 구현 순서, Phase 관리, 체크리스트                      |
+| 스킬             | 경로                                         | 트리거                                                   |
+| ---------------- | -------------------------------------------- | -------------------------------------------------------- |
+| UI 디자인 시스템 | `.claude/skills/ui-design/SKILL.md`          | 컴포넌트 스타일링, 색상, 타이포, 레이아웃, 반응형 작업   |
+| 프론트엔드       | `.claude/skills/frontend/SKILL.md`           | 페이지, 컴포넌트, 라우팅, 상태관리, 폼 처리              |
+| 백엔드 (DDD)     | `.claude/skills/backend/SKILL.md`            | API, Server Actions, 비즈니스 로직, Edge Functions       |
+| 데이터베이스     | `.claude/skills/database/SKILL.md`           | 스키마, 마이그레이션, RLS, 쿼리 최적화                   |
+| 인프라/배포      | `.claude/skills/infrastructure/SKILL.md`     | Vercel, Supabase 설정, 환경변수, CI/CD                   |
+| 개발 환경        | `.claude/skills/dev-environment/SKILL.md`    | 프로젝트 초기 셋업, 의존성, 로컬 개발 환경               |
+| 테스트           | `.claude/skills/testing/SKILL.md`            | 단위/통합/E2E 테스트 작성                                |
+| 프로젝트 관리    | `.claude/skills/project-management/SKILL.md` | 구현 순서, Phase 관리, 체크리스트                        |
+| 문서 동기화      | `.claude/skills/sync-docs/SKILL.md`          | Phase 완료 후, 패키지 변경 후 CLAUDE.md·스킬 파일 동기화 |
 
 ## 중요 원칙
 
