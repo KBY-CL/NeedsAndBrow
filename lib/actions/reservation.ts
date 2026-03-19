@@ -6,6 +6,7 @@ import { createServerClient } from '@/lib/supabase/server';
 import { isValidReservationDate } from '@/lib/domain/reservation/rules';
 import type { AuthResult } from '@/lib/domain/auth/types';
 import type { ReservationWithDetails, AvailableSlot } from '@/lib/domain/reservation/types';
+import { sendTelegramNotification } from '@/lib/services/telegram';
 
 // ─── Zod 스키마 ─────────────────────────────────────────────
 
@@ -79,6 +80,13 @@ export async function createReservation(_: unknown, formData: FormData): Promise
   });
 
   if (error) return { success: false, error: '예약에 실패했습니다. 다시 시도해 주세요.' };
+
+  // Telegram 알림 (비동기, 실패해도 예약은 유지)
+  sendTelegramNotification('new_reservation', {
+    date: parsed.data.date,
+    time_slot: parsed.data.timeSlot,
+    user_note: parsed.data.userNote,
+  }).catch(() => {});
 
   revalidatePath('/reservation');
   revalidatePath('/mypage');

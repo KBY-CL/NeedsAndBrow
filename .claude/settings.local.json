@@ -13,7 +13,32 @@
       "Bash(pnpm install:*)",
       "Bash(pnpm add:*)",
       "Bash(yes \"\")",
-      "Bash(pnpm dlx:*)"
+      "Bash(pnpm dlx:*)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(find /c/toy_project/NeedsAndBrow/app -type d -name *auth*)",
+      "Bash(ls -la /c/toy_project/NeedsAndBrow/app/\\\\\\(auth\\\\\\)/)",
+      "Bash(find /c/toy_project/NeedsAndBrow/app -type f -name *.ts -path */api/auth/*)",
+      "Bash(grep -r \"exchangeCodeForSession\\\\|onAuthStateChange\" /c/toy_project/NeedsAndBrow --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"NEXT_PUBLIC_SITE_URL\\\\|localhost\\\\|3000\" /c/toy_project/NeedsAndBrow/.env* --include=\"*.local\" --include=\"*.development\")",
+      "Bash(npx tsc:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s -D - -o /dev/null http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000)",
+      "WebSearch",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:mcp.supabase.com)",
+      "WebFetch(domain:github.com)",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__apply_migration",
+      "Bash(pnpm dev:*)",
+      "Bash(taskkill:*)",
+      "Bash(rm:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(find /c/toy_project/NeedsAndBrow/docs -type f -name *.md)"
     ]
   }
 }

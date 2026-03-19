@@ -196,7 +196,7 @@ create trigger inquiries_updated_at
 create table public.shop_info (
   id           int         primary key default 1
                            check (id = 1),        -- 단일 레코드 보장
-  name         text        not null default 'Beauty Lash & Brow',
+  name         text        not null default 'Needs Ann Brow',
   address      text        not null default '',
   phone        text        not null default '',
   kakao_url    text,

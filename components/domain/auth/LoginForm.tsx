@@ -1,13 +1,12 @@
 'use client';
 
 import { useActionState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { loginWithEmail, getOAuthUrl } from '@/lib/actions/auth';
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get('returnUrl') ?? '/';
 
@@ -15,10 +14,9 @@ export function LoginForm() {
 
   useEffect(() => {
     if (state?.success) {
-      router.push(returnUrl);
-      router.refresh();
+      window.location.href = returnUrl;
     }
-  }, [state, router, returnUrl]);
+  }, [state, returnUrl]);
 
   async function handleOAuth(provider: 'kakao' | 'google') {
     const result = await getOAuthUrl(provider);

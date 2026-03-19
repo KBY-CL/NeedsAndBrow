@@ -7,9 +7,7 @@ export function Footer() {
       <div className="mx-auto max-w-screen-lg px-5 py-10 md:px-8">
         {/* Brand */}
         <div className="mb-8">
-          <span className="font-display text-xl tracking-wider text-white">
-            Beauty Lash &amp; Brow
-          </span>
+          <span className="font-display text-xl tracking-wider text-white">Needs Ann Brow</span>
           <p className="font-ui text-gray mt-2 text-sm">속눈썹 연장 &middot; 반영구 시술 전문</p>
         </div>
 
@@ -57,7 +55,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="border-charcoal-light font-ui text-gray mt-10 border-t pt-6 text-center text-xs">
-          &copy; {new Date().getFullYear()} Beauty Lash &amp; Brow. All rights reserved.
+          &copy; {new Date().getFullYear()} Needs Ann Brow. All rights reserved.
         </div>
       </div>
     </footer>

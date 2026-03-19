@@ -1,5 +1,5 @@
 -- ============================================================
--- Seed Data — Beauty Lash & Brow
+-- Seed Data — Needs Ann Brow
 -- ============================================================
 -- 주의: 이 파일은 로컬 개발 환경에서만 사용. 프로덕션 X
 
@@ -36,7 +36,7 @@ insert into public.time_slots (time, is_active, max_reservations, sort_order) va
 -- 매장 정보
 -- ============================================================
 update public.shop_info set
-  name          = 'Beauty Lash & Brow',
+  name          = 'Needs Ann Brow',
   address       = '서울특별시 강남구 테헤란로 123 2층',
   phone         = '010-1234-5678',
   kakao_url     = null,

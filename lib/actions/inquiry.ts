@@ -3,7 +3,14 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/actions/utils';
 import type { AuthResult } from '@/lib/domain/auth/types';
+import { sendTelegramNotification } from '@/lib/services/telegram';
+import { createHash } from 'crypto';
+
+function hashPassword(password: string): string {
+  return createHash('sha256').update(password).digest('hex');
+}
 
 const InquirySchema = z.object({
   title: z.string().min(1, '제목을 입력하세요.').max(100),
@@ -32,8 +39,8 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 비밀번호를 간단 해시 (실제 프로덕션에서는 bcrypt 사용)
-  const passwordHash = parsed.data.password ? btoa(parsed.data.password) : null;
+  // 비밀번호 해싱 (SHA-256)
+  const passwordHash = parsed.data.password ? hashPassword(parsed.data.password) : null;
 
   const { error } = await supabase.from('inquiries').insert({
     user_id: user?.id ?? null,
@@ -43,6 +50,12 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
   });
 
   if (error) return { success: false, error: '문의 등록에 실패했습니다.' };
+
+  // Telegram 알림
+  sendTelegramNotification('new_inquiry', {
+    title: parsed.data.title,
+    user_name: user ? undefined : '비회원',
+  }).catch(() => {});
 
   revalidatePath('/inquiry');
   return { success: true, data: undefined };
@@ -65,7 +78,7 @@ export async function verifyInquiryPassword(
     return { success: true, data: undefined };
   }
 
-  const inputHash = btoa(password);
+  const inputHash = hashPassword(password);
   if (inputHash !== data.password_hash) {
     return { success: false, error: '비밀번호가 일치하지 않습니다.' };
   }
@@ -74,7 +87,8 @@ export async function verifyInquiryPassword(
 }
 
 export async function answerInquiry(inquiryId: string, answer: string): Promise<AuthResult> {
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
   const { error } = await supabase
     .from('inquiries')
     .update({
@@ -97,7 +111,12 @@ export async function getInquiries() {
     .from('inquiries')
     .select('id, title, status, created_at, user_id, password_hash')
     .order('created_at', { ascending: false });
-  return data ?? [];
+
+  // password_hash 값 자체를 노출하지 않고 존재 여부만 반환
+  return (data ?? []).map(({ password_hash, ...rest }) => ({
+    ...rest,
+    has_password: !!password_hash,
+  }));
 }
 
 export async function getInquiryById(id: string) {

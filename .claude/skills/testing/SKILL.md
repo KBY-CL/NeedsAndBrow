@@ -1,6 +1,6 @@
 ---
 name: testing
-description: 'Beauty Lash & Brow 테스트 작성 가이드. Vitest + React Testing Library 기반 단위/통합 테스트, Playwright E2E 테스트, Supabase 모킹, 도메인 로직 테스트 작성 시 사용. 새 기능 개발 시 테스트 작성, 버그 수정 후 회귀 테스트 추가, 테스트 커버리지 개선 등 테스트 관련 모든 작업에서 이 스킬을 반드시 참고할 것.'
+description: 'Needs Ann Brow 테스트 작성 가이드. Vitest + React Testing Library 기반 단위/통합 테스트, Playwright E2E 테스트, Supabase 모킹, 도메인 로직 테스트 작성 시 사용. 새 기능 개발 시 테스트 작성, 버그 수정 후 회귀 테스트 추가, 테스트 커버리지 개선 등 테스트 관련 모든 작업에서 이 스킬을 반드시 참고할 것.'
 ---
 
 # 테스트 가이드

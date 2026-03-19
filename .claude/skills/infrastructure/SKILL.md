@@ -1,6 +1,6 @@
 ---
 name: infrastructure
-description: 'Beauty Lash & Brow 인프라 및 배포 가이드. Vercel 배포, Supabase 프로젝트 설정, 환경변수 관리, CI/CD, 도메인 연결, 모니터링 작업 시 사용. 배포 설정, 환경변수 추가, GitHub Actions, Vercel 설정, Supabase 프로젝트 관리 등 인프라 관련 작업에서 이 스킬을 참고할 것.'
+description: 'Needs Ann Brow 인프라 및 배포 가이드. Vercel 배포, Supabase 프로젝트 설정, 환경변수 관리, CI/CD, 도메인 연결, 모니터링 작업 시 사용. 배포 설정, 환경변수 추가, GitHub Actions, Vercel 설정, Supabase 프로젝트 관리 등 인프라 관련 작업에서 이 스킬을 참고할 것.'
 ---
 
 # 인프라 및 배포 가이드

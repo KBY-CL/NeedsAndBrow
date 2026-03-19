@@ -1,6 +1,6 @@
 ---
 name: database
-description: 'Beauty Lash & Brow 데이터베이스 설계 및 관리 가이드. Supabase PostgreSQL 스키마, 마이그레이션, Row Level Security(RLS) 정책, 인덱스, 트리거, 쿼리 최적화 작업 시 사용. 테이블 추가/수정, RLS 정책 변경, DB 함수 작성, 마이그레이션 파일 생성 등 데이터베이스 관련 모든 작업에서 이 스킬을 반드시 참고할 것.'
+description: 'Needs Ann Brow 데이터베이스 설계 및 관리 가이드. Supabase PostgreSQL 스키마, 마이그레이션, Row Level Security(RLS) 정책, 인덱스, 트리거, 쿼리 최적화 작업 시 사용. 테이블 추가/수정, RLS 정책 변경, DB 함수 작성, 마이그레이션 파일 생성 등 데이터베이스 관련 모든 작업에서 이 스킬을 반드시 참고할 것.'
 ---
 
 # 데이터베이스 설계 가이드

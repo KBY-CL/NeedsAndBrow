@@ -47,7 +47,7 @@ export default async function InquiryListPage() {
         <div className="border-gray-light shadow-soft overflow-hidden rounded-xl border bg-white">
           {inquiries.map((inq, i) => {
             const status = getStatus(inq.status);
-            const hasPassword = !!inq.password_hash;
+            const hasPassword = inq.has_password;
 
             return (
               <Link

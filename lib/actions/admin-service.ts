@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/actions/utils';
 import type { AuthResult } from '@/lib/domain/auth/types';
 
 const ServiceSchema = z.object({
@@ -28,7 +29,9 @@ export async function createService(_: unknown, formData: FormData): Promise<Aut
     return { success: false, error: parsed.error.issues[0]?.message ?? '입력값을 확인하세요.' };
   }
 
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
+
   const { error } = await supabase.from('services').insert({
     name: parsed.data.name,
     category: parsed.data.category,
@@ -62,7 +65,9 @@ export async function updateService(
     return { success: false, error: parsed.error.issues[0]?.message ?? '입력값을 확인하세요.' };
   }
 
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
+
   const { error } = await supabase
     .from('services')
     .update({
@@ -82,7 +87,9 @@ export async function updateService(
 }
 
 export async function toggleServiceActive(id: string, isActive: boolean): Promise<AuthResult> {
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
+
   const { error } = await supabase.from('services').update({ is_active: isActive }).eq('id', id);
   if (error) return { success: false, error: '상태 변경에 실패했습니다.' };
 

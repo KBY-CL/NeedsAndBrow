@@ -4,7 +4,7 @@ import { getShopInfo } from '@/lib/actions/shop';
 
 export const metadata: Metadata = {
   title: '오시는 길',
-  description: 'Beauty Lash & Brow 매장 위치 안내',
+  description: 'Needs Ann Brow 매장 위치 안내',
 };
 
 export default async function LocationPage() {
@@ -16,7 +16,7 @@ export default async function LocationPage() {
     <div className="mx-auto max-w-screen-lg px-5 py-8 md:px-8">
       <div className="mb-8 text-center">
         <h1 className="font-display text-charcoal text-2xl">오시는 길</h1>
-        <p className="font-ui text-gray mt-2 text-sm">Beauty Lash &amp; Brow 매장 안내</p>
+        <p className="font-ui text-gray mt-2 text-sm">Needs Ann Brow 매장 안내</p>
       </div>
 
       {/* Map placeholder */}
