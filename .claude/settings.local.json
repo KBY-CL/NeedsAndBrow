@@ -38,7 +38,8 @@
       "Bash(pnpm lint:*)",
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(find /c/toy_project/NeedsAndBrow/docs -type f -name *.md)"
+      "Bash(find /c/toy_project/NeedsAndBrow/docs -type f -name *.md)",
+      "mcp__supabase__get_logs"
     ]
   }
 }

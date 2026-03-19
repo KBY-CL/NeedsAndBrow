@@ -51,11 +51,22 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
 
   if (error) return { success: false, error: '문의 등록에 실패했습니다.' };
 
+  // 사용자 이름 조회
+  let userName = '비회원';
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', user.id)
+      .single();
+    userName = profile?.name ?? user.email ?? '회원';
+  }
+
   // Telegram 알림
   sendTelegramNotification('new_inquiry', {
     title: parsed.data.title,
-    user_name: user ? undefined : '비회원',
-  }).catch(() => {});
+    user_name: userName,
+  }).catch((err) => console.error('[Telegram] inquiry notification failed:', err));
 
   revalidatePath('/inquiry');
   return { success: true, data: undefined };
