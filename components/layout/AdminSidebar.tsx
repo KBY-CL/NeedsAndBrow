@@ -76,14 +76,23 @@ export function AdminSidebar() {
         <Link href="/admin" className="font-display text-sm tracking-wider text-white">
           Needs Ann Brow Admin
         </Link>
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          className="rounded-lg p-1.5 text-white transition-colors hover:bg-white/10"
-          aria-label="메뉴 열기"
-        >
-          <Menu size={22} />
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            href="/"
+            className="text-gray hover:text-gold-light flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs transition-colors hover:bg-white/10"
+          >
+            <ChevronLeft size={14} strokeWidth={1.5} />
+            사이트
+          </Link>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="rounded-lg p-1.5 text-white transition-colors hover:bg-white/10"
+            aria-label="메뉴 열기"
+          >
+            <Menu size={22} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile overlay */}
