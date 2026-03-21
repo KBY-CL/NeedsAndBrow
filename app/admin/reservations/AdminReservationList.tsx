@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, X, ChevronLeft, ChevronRight, CalendarSearch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   getReservationsByDate,
@@ -20,19 +20,25 @@ const statusConfig: Record<ReservationStatus, { label: string; className: string
   cancelled: { label: '취소', className: 'bg-gray-light text-gray' },
 };
 
+const TODAY = format(new Date(), 'yyyy-MM-dd');
+
 export function AdminReservationList() {
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [date, setDate] = useState(TODAY);
   const [reservations, setReservations] = useState<ReservationRow[]>([]);
   const [isPending, startTransition] = useTransition();
-  const [loaded, setLoaded] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const loadReservations = (targetDate: string) => {
     startTransition(async () => {
       const data = await getReservationsByDate(targetDate);
       setReservations(data);
-      setLoaded(true);
     });
   };
+
+  // 페이지 진입 시 오늘 예약 자동 조회
+  useEffect(() => {
+    loadReservations(TODAY);
+  }, []);
 
   const handleDateChange = (newDate: string) => {
     setDate(newDate);
@@ -62,51 +68,61 @@ export function AdminReservationList() {
     handleDateChange(format(d, 'yyyy-MM-dd'));
   };
 
-  // Initial load prompt
-  if (!loaded && !isPending) {
-    return (
-      <div className="py-12 text-center">
-        <button
-          type="button"
-          onClick={() => loadReservations(date)}
-          className="font-ui bg-charcoal inline-flex h-9 items-center rounded-lg px-5 text-sm font-medium text-white transition-colors hover:bg-black"
-        >
-          {date} 예약 조회하기
-        </button>
-      </div>
-    );
-  }
+  const isToday = date === TODAY;
 
   return (
     <div>
-      {/* Date navigation */}
-      <div className="mb-6 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => shiftDate(-1)}
-          className="border-gray-light hover:bg-cream flex h-8 w-8 items-center justify-center rounded-lg border transition-colors"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => handleDateChange(e.target.value)}
-          className="border-gray-light font-ui text-charcoal rounded-lg border px-3 py-1.5 text-sm"
-        />
-        <button
-          type="button"
-          onClick={() => shiftDate(1)}
-          className="border-gray-light hover:bg-cream flex h-8 w-8 items-center justify-center rounded-lg border transition-colors"
-        >
-          <ChevronRight size={16} />
-        </button>
+      {/* 현재 조회 날짜 표시 */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="font-ui text-charcoal text-base font-semibold">
+            {isToday ? '오늘' : date}
+          </span>
+          {!isToday && (
+            <button
+              type="button"
+              onClick={() => {
+                setShowDatePicker(false);
+                handleDateChange(TODAY);
+              }}
+              className="font-ui text-gold-dark text-xs hover:underline"
+            >
+              오늘로 돌아가기
+            </button>
+          )}
+        </div>
         <span className="font-ui text-gray text-sm">
           {isPending ? '로딩...' : `${reservations.length}건`}
         </span>
       </div>
 
-      {/* List */}
+      {/* 다른 날짜 조회 패널 */}
+      {showDatePicker && (
+        <div className="border-gray-light shadow-soft mb-4 flex items-center gap-2 rounded-xl border bg-white px-4 py-3">
+          <button
+            type="button"
+            onClick={() => shiftDate(-1)}
+            className="border-gray-light hover:bg-cream flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => handleDateChange(e.target.value)}
+            className="border-gray-light font-ui text-charcoal min-w-0 flex-1 rounded-lg border px-3 py-1.5 text-sm"
+          />
+          <button
+            type="button"
+            onClick={() => shiftDate(1)}
+            className="border-gray-light hover:bg-cream flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* 예약 목록 */}
       {isPending ? (
         <div className="py-12 text-center">
           <div className="border-gold mx-auto h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
@@ -173,6 +189,23 @@ export function AdminReservationList() {
           })}
         </div>
       )}
+
+      {/* 다른 날짜 조회 버튼 */}
+      <div className="mt-6 text-center">
+        <button
+          type="button"
+          onClick={() => setShowDatePicker((v) => !v)}
+          className={cn(
+            'font-ui inline-flex h-9 items-center gap-2 rounded-lg px-4 text-sm font-medium transition-colors',
+            showDatePicker
+              ? 'bg-gray-light text-charcoal hover:bg-gray-light/80'
+              : 'border-gray-light text-charcoal hover:bg-cream border',
+          )}
+        >
+          <CalendarSearch size={15} strokeWidth={1.5} />
+          {showDatePicker ? '날짜 선택 닫기' : '다른 날짜 조회하기'}
+        </button>
+      </div>
     </div>
   );
 }
