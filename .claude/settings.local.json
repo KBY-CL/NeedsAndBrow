@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(pnpm create:*)",
       "Bash(printf 'No\\\\nNo\\\\n')",
@@ -13,7 +14,9 @@
       "Bash(pnpm install:*)",
       "Bash(pnpm add:*)",
       "Bash(yes \"\")",
-      "Bash(pnpm dlx:*)"
+      "Bash(pnpm dlx:*)",
+      "Bash(pnpm prepare:*)",
+      "Bash(pnpm typecheck:*)"
     ]
   }
 }

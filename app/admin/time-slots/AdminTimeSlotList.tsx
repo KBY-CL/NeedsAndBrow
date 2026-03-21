@@ -64,7 +64,7 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
         {showSlotForm && (
           <form
             action={slotFormAction}
-            className="border-gray-light shadow-soft mb-4 flex flex-wrap items-end gap-3 rounded-xl border bg-white p-4"
+            className="border-gray-light shadow-soft mb-4 grid grid-cols-2 gap-3 rounded-xl border bg-white p-4 sm:flex sm:flex-wrap sm:items-end"
           >
             <div>
               <label
@@ -78,7 +78,7 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
                 name="time"
                 placeholder="10:00"
                 required
-                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-24 rounded-lg border px-3 py-2 text-sm focus:ring-1"
+                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1 sm:w-24"
               />
             </div>
             <div>
@@ -95,17 +95,17 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
                 min={1}
                 defaultValue={1}
                 required
-                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-20 rounded-lg border px-3 py-2 text-sm focus:ring-1"
+                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1 sm:w-20"
               />
             </div>
             <input type="hidden" name="sortOrder" value="0" />
             {slotState && !slotState.success && (
-              <p className="font-ui text-error w-full text-xs">{slotState.error}</p>
+              <p className="font-ui text-error col-span-2 w-full text-xs">{slotState.error}</p>
             )}
             <button
               type="submit"
               disabled={slotPending}
-              className="font-ui bg-gold hover:bg-gold-dark h-9 rounded-lg px-4 text-sm font-medium text-white disabled:opacity-50"
+              className="font-ui bg-gold hover:bg-gold-dark col-span-2 h-9 rounded-lg px-4 text-sm font-medium text-white disabled:opacity-50 sm:col-span-1"
             >
               등록
             </button>
@@ -173,7 +173,7 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
         </div>
 
         {showDateForm && (
-          <div className="border-gray-light shadow-soft mb-4 flex flex-wrap items-end gap-3 rounded-xl border bg-white p-4">
+          <div className="border-gray-light shadow-soft mb-4 grid grid-cols-1 gap-3 rounded-xl border bg-white p-4 sm:flex sm:flex-wrap sm:items-end">
             <div>
               <label
                 htmlFor="blockedDate"
@@ -186,7 +186,7 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
                 type="date"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
-                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 rounded-lg border px-3 py-2 text-sm focus:ring-1"
+                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1"
               />
             </div>
             <div>
@@ -201,13 +201,13 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
                 value={newReason}
                 onChange={(e) => setNewReason(e.target.value)}
                 placeholder="예: 매장 휴무"
-                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 rounded-lg border px-3 py-2 text-sm focus:ring-1"
+                className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-3 py-2 text-sm focus:ring-1"
               />
             </div>
             <button
               type="button"
               onClick={handleAddBlockedDate}
-              className="font-ui bg-gold hover:bg-gold-dark h-9 rounded-lg px-4 text-sm font-medium text-white"
+              className="font-ui bg-gold hover:bg-gold-dark h-9 w-full rounded-lg px-4 text-sm font-medium text-white sm:w-auto"
             >
               등록
             </button>
