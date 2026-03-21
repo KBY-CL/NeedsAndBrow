@@ -1,28 +1,59 @@
 'use client';
 
-import { useState } from 'react';
-import { Lock, CheckCircle, Clock } from 'lucide-react';
-import { verifyInquiryPassword } from '@/lib/actions/inquiry';
+import { useState, useActionState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { Lock, CheckCircle, Clock, Pencil, Trash2, X } from 'lucide-react';
+import { verifyInquiryPassword, updateInquiry, deleteInquiry } from '@/lib/actions/inquiry';
 import type { Inquiry } from '@/types/database.types';
 
 type InquiryRow = Inquiry & { profile: { name: string } | null };
 
-export function InquiryDetail({ inquiry }: { inquiry: InquiryRow }) {
+export function InquiryDetail({
+  inquiry,
+  currentUserId,
+}: {
+  inquiry: InquiryRow;
+  currentUserId: string | null;
+}) {
+  const router = useRouter();
   const [verified, setVerified] = useState(!inquiry.password_hash);
+  const [verifiedPassword, setVerifiedPassword] = useState<string | null>(null);
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isPendingDelete, startDeleteTransition] = useTransition();
+
+  const isOwner = !!currentUserId && inquiry.user_id === currentUserId;
+  const canEdit = verified || isOwner;
+
+  const boundUpdate = updateInquiry.bind(null, inquiry.id, verifiedPassword);
+  const [updateState, updateAction, isUpdatePending] = useActionState(boundUpdate, null);
 
   const handleVerify = async () => {
     setVerifying(true);
-    setError(null);
+    setVerifyError(null);
     const result = await verifyInquiryPassword(inquiry.id, password);
     if (result.success) {
       setVerified(true);
+      setVerifiedPassword(password);
     } else {
-      setError(result.error);
+      setVerifyError(result.error ?? null);
     }
     setVerifying(false);
+  };
+
+  const handleDelete = () => {
+    if (!confirm('이 문의를 삭제하시겠습니까?')) return;
+    startDeleteTransition(async () => {
+      const result = await deleteInquiry(inquiry.id, verifiedPassword);
+      if (result.success) {
+        router.push('/inquiry');
+      } else {
+        setDeleteError(result.error ?? '삭제에 실패했습니다.');
+      }
+    });
   };
 
   // Password gate
@@ -50,7 +81,76 @@ export function InquiryDetail({ inquiry }: { inquiry: InquiryRow }) {
             확인
           </button>
         </div>
-        {error && <p className="font-ui text-error mt-3 text-sm">{error}</p>}
+        {verifyError && <p className="font-ui text-error mt-3 text-sm">{verifyError}</p>}
+      </div>
+    );
+  }
+
+  // Edit form
+  if (editing) {
+    return (
+      <div>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-ui text-charcoal text-lg font-semibold">문의 수정</h2>
+          <button
+            type="button"
+            onClick={() => setEditing(false)}
+            className="text-gray hover:text-charcoal"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <form action={updateAction} className="space-y-4">
+          <div>
+            <label htmlFor="title" className="font-ui text-charcoal mb-1 block text-sm font-medium">
+              제목
+            </label>
+            <input
+              id="title"
+              name="title"
+              required
+              defaultValue={inquiry.title}
+              maxLength={100}
+              className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-4 py-3 text-sm focus:ring-1"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="content"
+              className="font-ui text-charcoal mb-1 block text-sm font-medium"
+            >
+              내용
+            </label>
+            <textarea
+              id="content"
+              name="content"
+              required
+              rows={6}
+              maxLength={2000}
+              defaultValue={inquiry.content}
+              className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-4 py-3 text-sm focus:ring-1"
+            />
+          </div>
+          {updateState && !updateState.success && (
+            <p className="font-ui text-error text-sm">{updateState.error}</p>
+          )}
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={isUpdatePending}
+              className="font-ui bg-gold hover:bg-gold-dark h-10 rounded-lg px-5 text-sm font-medium text-white disabled:opacity-50"
+            >
+              {isUpdatePending ? '저장 중...' : '저장'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="font-ui text-gray h-10 rounded-lg px-4 text-sm hover:underline"
+            >
+              취소
+            </button>
+          </div>
+        </form>
       </div>
     );
   }
@@ -58,12 +158,42 @@ export function InquiryDetail({ inquiry }: { inquiry: InquiryRow }) {
   // Content
   return (
     <article>
-      <h1 className="font-display text-charcoal mb-2 text-2xl">{inquiry.title}</h1>
-      <div className="font-ui text-gray mb-6 flex items-center gap-3 text-sm">
-        <span>{inquiry.profile?.name ?? '비회원'}</span>
-        <span>&middot;</span>
-        <span>{new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</span>
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-charcoal mb-2 text-2xl">{inquiry.title}</h1>
+          <div className="font-ui text-gray flex items-center gap-3 text-sm">
+            <span>{inquiry.profile?.name ?? '비회원'}</span>
+            <span>&middot;</span>
+            <span>{new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</span>
+          </div>
+        </div>
+
+        {canEdit && (
+          <div className="flex shrink-0 gap-1">
+            {inquiry.status !== 'answered' && (
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="text-gray hover:text-gold-dark flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-amber-50"
+                title="수정"
+              >
+                <Pencil size={15} strokeWidth={1.5} />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={isPendingDelete}
+              className="bg-error/10 text-error hover:bg-error/20 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50"
+              title="삭제"
+            >
+              <Trash2 size={15} strokeWidth={1.5} />
+            </button>
+          </div>
+        )}
       </div>
+
+      {deleteError && <p className="font-ui text-error mb-4 text-sm">{deleteError}</p>}
 
       <div className="font-ui text-charcoal-light mb-8 text-base leading-relaxed whitespace-pre-wrap">
         {inquiry.content}

@@ -1,13 +1,18 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { createServerClient } from '@/lib/supabase/server';
 import { getInquiryById } from '@/lib/actions/inquiry';
 import { InquiryDetail } from './InquiryDetail';
 
 export default async function InquiryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const inquiry = await getInquiryById(id);
+  const [inquiry, supabase] = await Promise.all([getInquiryById(id), createServerClient()]);
   if (!inquiry) notFound();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <div className="mx-auto max-w-lg px-5 py-8 md:px-8">
@@ -19,7 +24,7 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
         목록으로
       </Link>
 
-      <InquiryDetail inquiry={inquiry} />
+      <InquiryDetail inquiry={inquiry} currentUserId={user?.id ?? null} />
     </div>
   );
 }

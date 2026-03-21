@@ -97,6 +97,82 @@ export async function verifyInquiryPassword(
   return { success: true, data: undefined };
 }
 
+async function verifyOwnership(
+  supabase: Awaited<ReturnType<typeof createServerClient>>,
+  inquiryId: string,
+  password: string | null,
+): Promise<boolean> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data } = await supabase
+    .from('inquiries')
+    .select('user_id, password_hash')
+    .eq('id', inquiryId)
+    .single();
+
+  if (!data) return false;
+
+  // 로그인 사용자 본인 확인
+  if (user && data.user_id === user.id) return true;
+
+  // 비밀번호 확인
+  if (password && data.password_hash) {
+    return hashPassword(password) === data.password_hash;
+  }
+
+  // 비밀번호 없는 문의는 누구나 수정 가능 (로그인 없이 작성한 공개 문의)
+  if (!data.password_hash && !data.user_id) return true;
+
+  return false;
+}
+
+export async function updateInquiry(
+  inquiryId: string,
+  password: string | null,
+  _: unknown,
+  formData: FormData,
+): Promise<AuthResult> {
+  const title = String(formData.get('title') ?? '').trim();
+  const content = String(formData.get('content') ?? '').trim();
+
+  if (!title) return { success: false, error: '제목을 입력하세요.' };
+  if (!content) return { success: false, error: '내용을 입력하세요.' };
+
+  const supabase = await createServerClient();
+
+  if (!(await verifyOwnership(supabase, inquiryId, password))) {
+    return { success: false, error: '수정 권한이 없습니다.' };
+  }
+
+  const { error } = await supabase.from('inquiries').update({ title, content }).eq('id', inquiryId);
+
+  if (error) return { success: false, error: '수정에 실패했습니다.' };
+
+  revalidatePath(`/inquiry/${inquiryId}`);
+  revalidatePath('/inquiry');
+  return { success: true, data: undefined };
+}
+
+export async function deleteInquiry(
+  inquiryId: string,
+  password: string | null,
+): Promise<AuthResult> {
+  const supabase = await createServerClient();
+
+  if (!(await verifyOwnership(supabase, inquiryId, password))) {
+    return { success: false, error: '삭제 권한이 없습니다.' };
+  }
+
+  const { error } = await supabase.from('inquiries').delete().eq('id', inquiryId);
+
+  if (error) return { success: false, error: '삭제에 실패했습니다.' };
+
+  revalidatePath('/inquiry');
+  return { success: true, data: undefined };
+}
+
 export async function answerInquiry(inquiryId: string, answer: string): Promise<AuthResult> {
   const { supabase, authorized } = await requireAdmin();
   if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };

@@ -6,6 +6,8 @@ import type { Inquiry } from '@/types/database.types';
 // Mock the server action
 vi.mock('@/lib/actions/inquiry', () => ({
   verifyInquiryPassword: vi.fn(),
+  updateInquiry: vi.fn(),
+  deleteInquiry: vi.fn(),
 }));
 
 type InquiryRow = Inquiry & { profile: { name: string } | null };
@@ -26,7 +28,7 @@ const baseInquiry: InquiryRow = {
 
 describe('InquiryDetail', () => {
   it('비밀번호가 없는 문의는 바로 내용을 표시한다', () => {
-    render(<InquiryDetail inquiry={baseInquiry} />);
+    render(<InquiryDetail inquiry={baseInquiry} currentUserId={null} />);
 
     expect(screen.getByText('시술 관련 문의')).toBeInTheDocument();
     expect(screen.getByText('자연스러운 연장이 가능한가요?')).toBeInTheDocument();
@@ -35,7 +37,7 @@ describe('InquiryDetail', () => {
 
   it('비밀번호가 있는 문의는 비밀번호 입력 화면을 표시한다', () => {
     const withPassword = { ...baseInquiry, password_hash: 'dGVzdA==' };
-    render(<InquiryDetail inquiry={withPassword} />);
+    render(<InquiryDetail inquiry={withPassword} currentUserId={null} />);
 
     expect(screen.getByText('비밀번호 확인')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('비밀번호 입력')).toBeInTheDocument();
@@ -43,7 +45,7 @@ describe('InquiryDetail', () => {
   });
 
   it('답변이 없으면 대기중 표시를 한다', () => {
-    render(<InquiryDetail inquiry={baseInquiry} />);
+    render(<InquiryDetail inquiry={baseInquiry} currentUserId={null} />);
 
     expect(screen.getByText('답변 대기중입니다.')).toBeInTheDocument();
   });
@@ -56,7 +58,7 @@ describe('InquiryDetail', () => {
       status: 'answered',
     };
 
-    render(<InquiryDetail inquiry={withAnswer} />);
+    render(<InquiryDetail inquiry={withAnswer} currentUserId={null} />);
 
     expect(screen.getByText('관리자 답변')).toBeInTheDocument();
     expect(screen.getByText('네, 가능합니다. 상담 후 진행해드립니다.')).toBeInTheDocument();
@@ -64,7 +66,7 @@ describe('InquiryDetail', () => {
 
   it('비회원 문의는 "비회원"으로 표시한다', () => {
     const anonymous: InquiryRow = { ...baseInquiry, user_id: null, profile: null };
-    render(<InquiryDetail inquiry={anonymous} />);
+    render(<InquiryDetail inquiry={anonymous} currentUserId={null} />);
 
     expect(screen.getByText('비회원')).toBeInTheDocument();
   });
