@@ -214,14 +214,28 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
           </div>
         )}
 
-        <div className="space-y-2">
-          {initialBlockedDates.map((bd) => (
+        {(() => {
+          const today = new Date().toISOString().slice(0, 10);
+          const upcoming = initialBlockedDates.filter((bd) => bd.date >= today);
+          const past = initialBlockedDates.filter((bd) => bd.date < today);
+
+          const renderRow = (bd: (typeof initialBlockedDates)[number], isPast: boolean) => (
             <div
               key={bd.id}
-              className="border-gray-light shadow-soft flex items-center justify-between rounded-xl border bg-white px-4 py-3"
+              className={cn(
+                'border-gray-light shadow-soft flex items-center justify-between rounded-xl border px-4 py-3',
+                isPast ? 'bg-gray-light/30 opacity-60' : 'bg-white',
+              )}
             >
               <div>
-                <span className="font-ui text-charcoal text-sm font-semibold">{bd.date}</span>
+                <span
+                  className={cn(
+                    'font-ui text-sm font-semibold',
+                    isPast ? 'text-gray line-through' : 'text-charcoal',
+                  )}
+                >
+                  {bd.date}
+                </span>
                 {bd.reason && <span className="font-ui text-gray ml-2 text-xs">{bd.reason}</span>}
               </div>
               <button
@@ -233,11 +247,42 @@ export function AdminTimeSlotList({ initialSlots, initialBlockedDates }: Props) 
                 <Trash2 size={14} />
               </button>
             </div>
-          ))}
-          {initialBlockedDates.length === 0 && (
-            <p className="font-ui text-gray py-8 text-center text-sm">등록된 마감일이 없습니다.</p>
-          )}
-        </div>
+          );
+
+          return (
+            <div className="space-y-6">
+              {/* Upcoming */}
+              <div className="space-y-2">
+                <p className="font-ui text-charcoal text-xs font-semibold tracking-wider uppercase">
+                  예정된 마감일 ({upcoming.length})
+                </p>
+                {upcoming.length > 0 ? (
+                  upcoming.map((bd) => renderRow(bd, false))
+                ) : (
+                  <p className="font-ui text-gray py-4 text-center text-sm">
+                    예정된 마감일이 없습니다.
+                  </p>
+                )}
+              </div>
+
+              {/* Past */}
+              {past.length > 0 && (
+                <div className="space-y-2">
+                  <p className="font-ui text-gray text-xs font-semibold tracking-wider uppercase">
+                    지난 마감일 ({past.length})
+                  </p>
+                  {past.map((bd) => renderRow(bd, true))}
+                </div>
+              )}
+
+              {initialBlockedDates.length === 0 && (
+                <p className="font-ui text-gray py-8 text-center text-sm">
+                  등록된 마감일이 없습니다.
+                </p>
+              )}
+            </div>
+          );
+        })()}
       </section>
     </div>
   );
