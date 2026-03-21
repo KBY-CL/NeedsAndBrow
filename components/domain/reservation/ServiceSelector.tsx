@@ -11,7 +11,10 @@ interface ServiceSelectorProps {
 }
 
 const categoryLabel: Record<ServiceCategory, string> = {
+  이벤트: '이벤트',
   속눈썹연장: '속눈썹 연장',
+  속눈썹펌: '속눈썹 펌',
+  왁싱: '페이스 왁싱',
   눈썹문신: '눈썹 문신',
   기타: '기타',
 };
@@ -22,7 +25,7 @@ export function ServiceSelector({ services, selectedId, onSelect }: ServiceSelec
       acc[svc.category].push(svc);
       return acc;
     },
-    { 속눈썹연장: [], 눈썹문신: [], 기타: [] },
+    { 이벤트: [], 속눈썹연장: [], 속눈썹펌: [], 왁싱: [], 눈썹문신: [], 기타: [] },
   );
 
   return (
@@ -67,9 +70,11 @@ export function ServiceSelector({ services, selectedId, onSelect }: ServiceSelec
                   </div>
                   <div className="text-right">
                     <p className="font-ui text-charcoal text-sm font-semibold">
-                      {service.price.toLocaleString()}원
+                      {service.price === 0 ? '가격 문의' : `${service.price.toLocaleString()}원`}
                     </p>
-                    <p className="font-ui text-gray text-xs">{service.duration}분</p>
+                    {service.duration > 0 && (
+                      <p className="font-ui text-gray text-xs">{service.duration}분</p>
+                    )}
                   </div>
                 </button>
               ))}

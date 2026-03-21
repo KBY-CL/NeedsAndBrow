@@ -10,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 const categoryLabel: Record<ServiceCategory, string> = {
+  이벤트: '이벤트',
   속눈썹연장: '속눈썹 연장',
+  속눈썹펌: '속눈썹 펌',
+  왁싱: '페이스 왁싱',
   눈썹문신: '눈썹 문신',
   기타: '기타',
 };
@@ -29,7 +32,7 @@ export default async function PricePage() {
       acc[svc.category]!.push(svc);
       return acc;
     },
-    { 속눈썹연장: [], 눈썹문신: [], 기타: [] },
+    { 이벤트: [], 속눈썹연장: [], 속눈썹펌: [], 왁싱: [], 눈썹문신: [], 기타: [] },
   );
 
   return (
@@ -60,10 +63,12 @@ export default async function PricePage() {
                       {service.description && (
                         <p className="font-ui text-gray mt-0.5 text-xs">{service.description}</p>
                       )}
-                      <p className="font-ui text-gray mt-0.5 text-xs">{service.duration}분</p>
+                      {service.duration > 0 && (
+                        <p className="font-ui text-gray mt-0.5 text-xs">{service.duration}분</p>
+                      )}
                     </div>
                     <span className="font-ui text-charcoal text-sm font-semibold">
-                      {service.price.toLocaleString()}원
+                      {service.price === 0 ? '가격 문의' : `${service.price.toLocaleString()}원`}
                     </span>
                   </div>
                 ))}

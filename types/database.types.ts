@@ -52,7 +52,7 @@ export type Database = {
         Row: {
           id: string;
           name: string;
-          category: '속눈썹연장' | '눈썹문신' | '기타';
+          category: '이벤트' | '속눈썹연장' | '속눈썹펌' | '왁싱' | '눈썹문신' | '기타';
           description: string | null;
           duration: number;
           price: number;
@@ -64,7 +64,7 @@ export type Database = {
         Insert: {
           id?: string;
           name: string;
-          category: '속눈썹연장' | '눈썹문신' | '기타';
+          category: '이벤트' | '속눈썹연장' | '속눈썹펌' | '왁싱' | '눈썹문신' | '기타';
           description?: string | null;
           duration?: number;
           price: number;
@@ -76,7 +76,7 @@ export type Database = {
         Update: {
           id?: string;
           name?: string;
-          category?: '속눈썹연장' | '눈썹문신' | '기타';
+          category?: '이벤트' | '속눈썹연장' | '속눈썹펌' | '왁싱' | '눈썹문신' | '기타';
           description?: string | null;
           duration?: number;
           price?: number;
@@ -196,7 +196,7 @@ export type Database = {
       gallery: {
         Row: {
           id: string;
-          category: '속눈썹연장' | '눈썹문신' | '기타';
+          category: '이벤트' | '속눈썹연장' | '속눈썹펌' | '왁싱' | '눈썹문신' | '기타';
           before_url: string;
           after_url: string;
           description: string | null;
@@ -206,7 +206,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          category: '속눈썹연장' | '눈썹문신' | '기타';
+          category: '이벤트' | '속눈썹연장' | '속눈썹펌' | '왁싱' | '눈썹문신' | '기타';
           before_url: string;
           after_url: string;
           description?: string | null;
@@ -216,7 +216,7 @@ export type Database = {
         };
         Update: {
           id?: string;
-          category?: '속눈썹연장' | '눈썹문신' | '기타';
+          category?: '이벤트' | '속눈썹연장' | '속눈썹펌' | '왁싱' | '눈썹문신' | '기타';
           before_url?: string;
           after_url?: string;
           description?: string | null;
