@@ -87,8 +87,8 @@ export async function createReservation(_: unknown, formData: FormData): Promise
     supabase.from('profiles').select('name').eq('id', user.id).single(),
   ]);
 
-  // Telegram 알림 (비동기, 실패해도 예약은 유지)
-  sendTelegramNotification('new_reservation', {
+  // Telegram 알림 (실패해도 예약은 유지)
+  await sendTelegramNotification('new_reservation', {
     date: parsed.data.date,
     time_slot: parsed.data.timeSlot,
     service_name: service?.name,
@@ -132,7 +132,7 @@ export async function cancelReservation(reservationId: string): Promise<AuthResu
       .single();
 
     const service = reservation.service as { name: string } | null;
-    sendTelegramNotification('cancel_reservation', {
+    await sendTelegramNotification('cancel_reservation', {
       date: reservation.date,
       time_slot: reservation.time_slot,
       service_name: service?.name,

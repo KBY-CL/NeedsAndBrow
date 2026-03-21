@@ -63,7 +63,7 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
   }
 
   // Telegram 알림
-  sendTelegramNotification('new_inquiry', {
+  await sendTelegramNotification('new_inquiry', {
     title: parsed.data.title,
     user_name: userName,
   }).catch((err) => console.error('[Telegram] inquiry notification failed:', err));
