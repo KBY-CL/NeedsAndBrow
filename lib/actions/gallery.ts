@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/actions/utils';
 import type { AuthResult } from '@/lib/domain/auth/types';
 import type { ServiceCategory } from '@/types/database.types';
 
@@ -27,7 +28,9 @@ export async function createGalleryItem(_: unknown, formData: FormData): Promise
     return { success: false, error: parsed.error.issues[0]?.message ?? '입력값을 확인하세요.' };
   }
 
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
+
   const { error } = await supabase.from('gallery').insert({
     category: parsed.data.category,
     before_url: parsed.data.beforeUrl,
@@ -44,7 +47,8 @@ export async function createGalleryItem(_: unknown, formData: FormData): Promise
 }
 
 export async function toggleGalleryVisibility(id: string, isVisible: boolean): Promise<AuthResult> {
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
   const { error } = await supabase.from('gallery').update({ is_visible: isVisible }).eq('id', id);
   if (error) return { success: false, error: '상태 변경에 실패했습니다.' };
 
@@ -54,7 +58,8 @@ export async function toggleGalleryVisibility(id: string, isVisible: boolean): P
 }
 
 export async function deleteGalleryItem(id: string): Promise<AuthResult> {
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
   const { error } = await supabase.from('gallery').delete().eq('id', id);
   if (error) return { success: false, error: '삭제에 실패했습니다.' };
 

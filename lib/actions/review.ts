@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/actions/utils';
 import type { AuthResult } from '@/lib/domain/auth/types';
 
 const ReviewSchema = z.object({
@@ -107,9 +108,9 @@ export async function deleteReview(reviewId: string): Promise<AuthResult> {
     .eq('id', user.id)
     .single();
 
-  const deleteQuery = supabase.from('reviews').delete().eq('id', reviewId);
+  let deleteQuery = supabase.from('reviews').delete().eq('id', reviewId);
   if (profile?.role !== 'admin') {
-    deleteQuery.eq('user_id', user.id);
+    deleteQuery = deleteQuery.eq('user_id', user.id);
   }
 
   const { error } = await deleteQuery;
@@ -123,7 +124,8 @@ export async function toggleOfficialReview(
   reviewId: string,
   isOfficial: boolean,
 ): Promise<AuthResult> {
-  const supabase = await createServerClient();
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
   const { error } = await supabase
     .from('reviews')
     .update({ is_official: isOfficial })

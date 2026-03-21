@@ -1,11 +1,11 @@
-# Beauty Lash & Brow — 프로젝트 CLAUDE.md
+# Needs Ann Brow — 프로젝트 CLAUDE.md
 
 ## 프로젝트 개요
 
 속눈썹 연장 및 반영구 시술 전문 매장을 위한 반응형 웹앱.
 모바일 퍼스트 설계, DDD(Domain-Driven Design) 기반 아키텍처.
 
-- **프로젝트명**: beauty-lash
+- **프로젝트명**: needs-ann-brow
 - **설계서**: `docs/DESIGN_SPEC.md` — 전체 기능 명세, DB 스키마, 페이지 구조 참고
 - **디자인 컨셉**: `docs/DESIGN_CONCEPT.md` — 컬러, 타이포그래피, UI 톤앤매너
 
@@ -49,7 +49,7 @@ supabase functions serve
 ## 프로젝트 구조
 
 ```
-beauty-lash/
+needs-ann-brow/
 ├── app/                    # Next.js App Router
 │   ├── (auth)/             # 인증 페이지 (로그인, 회원가입, 비밀번호찾기)
 │   ├── (main)/             # 사용자 페이지 (갤러리, 후기, 예약 등)

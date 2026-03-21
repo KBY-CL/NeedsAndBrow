@@ -1,11 +1,11 @@
 ---
 name: frontend
-description: 'Beauty Lash & Brow 프론트엔드 개발 가이드. Next.js App Router 기반 페이지 생성, React 컴포넌트 작성, 라우팅, 상태관리(Zustand), 폼 처리(React Hook Form + Zod), 클라이언트/서버 컴포넌트 구분, 미들웨어, 이미지 최적화, SEO 작업 시 사용. 새 페이지를 만들거나 컴포넌트를 추가/수정할 때, 또는 프론트엔드 로직을 구현할 때 이 스킬을 반드시 참고할 것.'
+description: 'Needs Ann Brow 프론트엔드 개발 가이드. Next.js App Router 기반 페이지 생성, React 컴포넌트 작성, 라우팅, 상태관리(Zustand), 폼 처리(React Hook Form + Zod), 클라이언트/서버 컴포넌트 구분, 미들웨어, 이미지 최적화, SEO 작업 시 사용. 새 페이지를 만들거나 컴포넌트를 추가/수정할 때, 또는 프론트엔드 로직을 구현할 때 이 스킬을 반드시 참고할 것.'
 ---
 
 # 프론트엔드 개발 가이드
 
-Next.js 14 App Router 기반. 서버 컴포넌트 우선, 필요 시에만 클라이언트 컴포넌트 사용.
+Next.js 16 App Router 기반. 서버 컴포넌트 우선, 필요 시에만 클라이언트 컴포넌트 사용.
 
 ## App Router 구조
 
@@ -200,7 +200,7 @@ const adminRoutes = ['/admin'];
 ```tsx
 // 패턴: 각 페이지의 metadata export
 export const metadata: Metadata = {
-  title: '시술 후기 | Beauty Lash & Brow',
+  title: '시술 후기 | Needs Ann Brow',
   description: '속눈썹 연장, 반영구 시술 후기를 확인하세요.',
   openGraph: { ... },
 };

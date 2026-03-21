@@ -16,6 +16,7 @@ import {
   LogIn,
   LogOut,
   User,
+  Settings,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -38,7 +39,7 @@ const menuItems = [
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const pathname = usePathname();
-  const { profile } = useAuthStore();
+  const { profile, isAdmin } = useAuthStore();
 
   // Close on route change
   useEffect(() => {
@@ -127,13 +128,22 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 <User size={18} strokeWidth={1.5} />
                 마이페이지
               </Link>
-              <Link
+              {isAdmin() && (
+                <Link
+                  href="/admin"
+                  className="font-ui text-charcoal-light hover:bg-cream-dark flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors"
+                >
+                  <Settings size={18} strokeWidth={1.5} />
+                  관리자
+                </Link>
+              )}
+              <a
                 href="/api/auth/logout"
                 className="font-ui hover:bg-cream-dark flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-red-500 transition-colors"
               >
                 <LogOut size={18} strokeWidth={1.5} />
                 로그아웃
-              </Link>
+              </a>
             </div>
           ) : (
             <Link

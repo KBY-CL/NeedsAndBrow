@@ -11,9 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* 로고 */}
       <header className="px-4 py-6 text-center">
         <Link href="/" className="inline-block">
-          <span className="font-display text-charcoal text-xl tracking-wider">
-            Beauty Lash &amp; Brow
-          </span>
+          <span className="font-display text-charcoal text-xl tracking-wider">Needs Ann Brow</span>
         </Link>
       </header>
 

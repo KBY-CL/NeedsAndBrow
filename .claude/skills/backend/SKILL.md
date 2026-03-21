@@ -1,6 +1,6 @@
 ---
 name: backend
-description: 'Beauty Lash & Brow 백엔드 개발 가이드. Domain-Driven Design(DDD) 기반 아키텍처. Server Actions, API Routes, Supabase Edge Functions, 비즈니스 로직, Telegram 알림 구현 시 사용. 예약 처리 로직, 인증 플로우, 데이터 접근 계층, 파일 업로드 등 서버사이드 로직을 작성할 때 이 스킬을 반드시 참고할 것.'
+description: 'Needs Ann Brow 백엔드 개발 가이드. Domain-Driven Design(DDD) 기반 아키텍처. Server Actions, API Routes, Supabase Edge Functions, 비즈니스 로직, Telegram 알림 구현 시 사용. 예약 처리 로직, 인증 플로우, 데이터 접근 계층, 파일 업로드 등 서버사이드 로직을 작성할 때 이 스킬을 반드시 참고할 것.'
 ---
 
 # 백엔드 개발 가이드 (DDD)

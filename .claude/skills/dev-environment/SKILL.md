@@ -1,6 +1,6 @@
 ---
 name: dev-environment
-description: 'Beauty Lash & Brow 개발 환경 설정 가이드. 프로젝트 초기 셋업, Node.js/pnpm 설치, 의존성 관리, Supabase 로컬 환경, ESLint/Prettier, IDE 설정, Git hooks 구성 등 개발 환경을 구축하거나 수정할 때 사용. 새 개발자 온보딩, 의존성 추가/변경, 로컬 개발 환경 문제 해결 시 이 스킬을 참고할 것.'
+description: 'Needs Ann Brow 개발 환경 설정 가이드. 프로젝트 초기 셋업, Node.js/pnpm 설치, 의존성 관리, Supabase 로컬 환경, ESLint/Prettier, IDE 설정, Git hooks 구성 등 개발 환경을 구축하거나 수정할 때 사용. 새 개발자 온보딩, 의존성 추가/변경, 로컬 개발 환경 문제 해결 시 이 스킬을 참고할 것.'
 ---
 
 # 개발 환경 설정 가이드
@@ -218,8 +218,6 @@ export default defineConfig([
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "db:reset": "supabase db reset",
-    "db:migrate": "supabase migration new",
     "db:types": "supabase gen types typescript --local > types/database.types.ts",
     "prepare": "husky"
   }
