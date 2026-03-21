@@ -333,18 +333,22 @@ export function AdminServiceList({ initialServices }: AdminServiceListProps) {
         </div>
       )}
 
-      {/* 사용 중 / 비활성화 목록 */}
-      <div className="space-y-2">
-        <p className="font-ui text-charcoal text-xs font-semibold tracking-wider uppercase">
-          서비스 목록 ({visible.length})
-        </p>
-        {visible.length === 0 && (
-          <p className="font-ui text-gray py-6 text-center text-sm">등록된 서비스가 없습니다.</p>
-        )}
-        {visible.map((service) => (
-          <ServiceRow key={service.id} service={service} {...rowProps} />
-        ))}
-      </div>
+      {/* 카테고리별 서비스 목록 */}
+      {categories.map((category) => {
+        const items = visible.filter((s) => s.category === category);
+        if (items.length === 0) return null;
+        return (
+          <div key={category} className="space-y-2">
+            <h2 className="font-ui text-charcoal text-lg font-semibold">{category}</h2>
+            {items.map((service) => (
+              <ServiceRow key={service.id} service={service} {...rowProps} />
+            ))}
+          </div>
+        );
+      })}
+      {visible.length === 0 && (
+        <p className="font-ui text-gray py-6 text-center text-sm">등록된 서비스가 없습니다.</p>
+      )}
 
       {/* 숨긴 서비스 목록 */}
       {hidden.length > 0 && (
