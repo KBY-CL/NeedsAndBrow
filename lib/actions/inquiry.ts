@@ -15,6 +15,7 @@ function hashPassword(password: string): string {
 const InquirySchema = z.object({
   title: z.string().min(1, '제목을 입력하세요.').max(100),
   content: z.string().min(1, '내용을 입력하세요.').max(2000),
+  contact_phone: z.string().min(1, '연락처를 입력하세요.').max(20),
   password: z
     .string()
     .min(4, '비밀번호는 4자 이상이어야 합니다.')
@@ -27,6 +28,7 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
   const parsed = InquirySchema.safeParse({
     title: formData.get('title'),
     content: formData.get('content'),
+    contact_phone: formData.get('contact_phone'),
     password: formData.get('password') || '',
   });
 
@@ -46,6 +48,7 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
     user_id: user?.id ?? null,
     title: parsed.data.title,
     content: parsed.data.content,
+    contact_phone: parsed.data.contact_phone,
     password_hash: passwordHash,
   });
 
@@ -66,6 +69,7 @@ export async function createInquiry(_: unknown, formData: FormData): Promise<Aut
   await sendTelegramNotification('new_inquiry', {
     title: parsed.data.title,
     user_name: userName,
+    contact_phone: parsed.data.contact_phone,
   }).catch((err) => console.error('[Telegram] inquiry notification failed:', err));
 
   revalidatePath('/inquiry');

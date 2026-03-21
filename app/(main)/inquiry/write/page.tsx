@@ -50,6 +50,25 @@ export default function WriteInquiryPage() {
 
         <div>
           <label
+            htmlFor="contact_phone"
+            className="font-ui text-charcoal mb-2 block text-sm font-medium"
+          >
+            연락처 <span className="text-error">*</span>
+          </label>
+          <input
+            id="contact_phone"
+            name="contact_phone"
+            type="tel"
+            required
+            maxLength={20}
+            placeholder="010-0000-0000"
+            className="border-gray-light font-ui text-charcoal focus:border-gold focus:ring-gold/30 placeholder:text-gray w-full rounded-lg border px-4 py-3 text-sm focus:ring-1"
+          />
+          <p className="font-ui text-gray mt-1 text-xs">답변 연락을 위해 필수로 입력해 주세요.</p>
+        </div>
+
+        <div>
+          <label
             htmlFor="password"
             className="font-ui text-charcoal mb-2 block text-sm font-medium"
           >

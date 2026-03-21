@@ -164,6 +164,8 @@ export function InquiryDetail({
           <div className="font-ui text-gray flex items-center gap-3 text-sm">
             <span>{inquiry.profile?.name ?? '비회원'}</span>
             <span>&middot;</span>
+            <span>{inquiry.contact_phone}</span>
+            <span>&middot;</span>
             <span>{new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</span>
           </div>
         </div>

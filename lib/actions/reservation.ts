@@ -84,7 +84,7 @@ export async function createReservation(_: unknown, formData: FormData): Promise
   // 알림에 필요한 추가 정보 조회
   const [{ data: service }, { data: profile }] = await Promise.all([
     supabase.from('services').select('name').eq('id', parsed.data.serviceId).single(),
-    supabase.from('profiles').select('name').eq('id', user.id).single(),
+    supabase.from('profiles').select('name, phone').eq('id', user.id).single(),
   ]);
 
   // Telegram 알림 (실패해도 예약은 유지)
@@ -93,6 +93,7 @@ export async function createReservation(_: unknown, formData: FormData): Promise
     time_slot: parsed.data.timeSlot,
     service_name: service?.name,
     user_name: profile?.name ?? user.email,
+    user_phone: profile?.phone ?? null,
     user_note: parsed.data.userNote,
   }).catch((err) => console.error('[Telegram] reservation notification failed:', err));
 

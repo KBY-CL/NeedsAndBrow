@@ -315,6 +315,7 @@ export type Database = {
           user_id: string | null;
           title: string;
           content: string;
+          contact_phone: string;
           password_hash: string | null;
           answer: string | null;
           answered_at: string | null;
@@ -327,6 +328,7 @@ export type Database = {
           user_id?: string | null;
           title: string;
           content: string;
+          contact_phone: string;
           password_hash?: string | null;
           answer?: string | null;
           answered_at?: string | null;
@@ -339,6 +341,7 @@ export type Database = {
           user_id?: string | null;
           title?: string;
           content?: string;
+          contact_phone?: string;
           password_hash?: string | null;
           answer?: string | null;
           answered_at?: string | null;

@@ -16,6 +16,7 @@ function formatMessage(type: NotificationType, data: NotificationData): string {
         `시간: ${data.time_slot}`,
         `서비스: ${data.service_name ?? '-'}`,
         `고객: ${data.user_name ?? '-'}`,
+        `연락처: ${data.user_phone ?? '미등록'}`,
         data.user_note ? `메모: ${data.user_note}` : '',
       ]
         .filter(Boolean)
@@ -34,6 +35,7 @@ function formatMessage(type: NotificationType, data: NotificationData): string {
         '💬 <b>새 상담 문의</b>',
         `제목: ${data.title}`,
         `작성자: ${data.user_name ?? '비회원'}`,
+        `연락처: ${data.contact_phone}`,
       ].join('\n');
 
     default:

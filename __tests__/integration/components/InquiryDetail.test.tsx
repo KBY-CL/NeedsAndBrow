@@ -17,6 +17,7 @@ const baseInquiry: InquiryRow = {
   user_id: 'user-1',
   title: '시술 관련 문의',
   content: '자연스러운 연장이 가능한가요?',
+  contact_phone: '010-1234-5678',
   password_hash: null,
   answer: null,
   answered_at: null,
