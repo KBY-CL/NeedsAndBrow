@@ -10,7 +10,13 @@ export const metadata: Metadata = {
 export default async function ReservationPage() {
   const supabase = await createServerClient();
 
-  const [{ data: services }, { data: blockedDates }] = await Promise.all([
+  const [
+    { data: services },
+    { data: blockedDates },
+    {
+      data: { user },
+    },
+  ] = await Promise.all([
     supabase
       .from('services')
       .select('*')
@@ -18,7 +24,18 @@ export default async function ReservationPage() {
       .eq('is_hidden', false)
       .order('sort_order'),
     supabase.from('blocked_dates').select('date'),
+    supabase.auth.getUser(),
   ]);
+
+  let userPhone: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('phone')
+      .eq('id', user.id)
+      .single();
+    userPhone = profile?.phone ?? null;
+  }
 
   return (
     <div className="mx-auto max-w-screen-lg px-5 py-8 md:px-8">
@@ -30,6 +47,7 @@ export default async function ReservationPage() {
       <ReservationForm
         services={services ?? []}
         blockedDates={blockedDates?.map((d) => d.date) ?? []}
+        initialPhone={userPhone}
       />
     </div>
   );
