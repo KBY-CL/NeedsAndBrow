@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { MapPin, Phone, Clock, Car } from 'lucide-react';
+import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
 import { getShopInfo } from '@/lib/actions/shop';
 
 export const metadata: Metadata = {
@@ -62,9 +62,9 @@ export default async function LocationPage() {
             </li>
             {shop?.parking_info && (
               <li className="flex items-start gap-3">
-                <Car size={18} strokeWidth={1.5} className="text-gold mt-0.5 shrink-0" />
+                <Navigation size={18} strokeWidth={1.5} className="text-gold mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-ui text-charcoal text-sm font-medium">주차</p>
+                  <p className="font-ui text-charcoal text-sm font-medium">위치 안내</p>
                   <p className="font-ui text-charcoal-light text-sm">{shop.parking_info}</p>
                 </div>
               </li>

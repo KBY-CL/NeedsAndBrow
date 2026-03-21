@@ -37,8 +37,8 @@ insert into public.time_slots (time, is_active, max_reservations, sort_order) va
 -- ============================================================
 update public.shop_info set
   name          = 'Needs Ann Brow',
-  address       = '서울특별시 강남구 테헤란로 123 2층',
-  phone         = '010-1234-5678',
+  address       = '서울 강서구 화곡로54길 43 근린생활시설동 2층',
+  phone         = '0507-1489-4666',
   kakao_url     = null,
   instagram_url = null,
   hours         = '{
@@ -50,9 +50,9 @@ update public.shop_info set
     "토": "10:00 - 18:00",
     "일": "휴무"
   }'::jsonb,
-  parking_info  = '건물 내 2시간 무료 주차 가능',
-  map_lat       = 37.5012743,
-  map_lng       = 127.0396597,
+  parking_info  = '강서경찰서 뒷편 금호어울림 퍼스티어 후문 상가 2층',
+  map_lat       = 37.5396000,
+  map_lng       = 126.8497000,
   updated_at    = now()
 where id = 1;
 

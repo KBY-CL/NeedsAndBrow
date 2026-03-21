@@ -18,11 +18,11 @@ export function Footer() {
             <ul className="font-ui text-gray space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Phone size={14} strokeWidth={1.5} />
-                <span>010-0000-0000</span>
+                <span>0507-1489-4666</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={14} strokeWidth={1.5} className="mt-0.5 shrink-0" />
-                <span>서울시 강남구 역삼동 000-00</span>
+                <span>서울 강서구 화곡로54길 43 2층</span>
               </li>
               <li className="flex items-center gap-2">
                 <Clock size={14} strokeWidth={1.5} />
