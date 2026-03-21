@@ -1,10 +1,7 @@
 -- 서비스 카테고리 확장 및 실제 시술 메뉴 반영
 -- ============================================================
 
--- 기존 services 데이터 삭제 후 재삽입
-delete from public.services;
-
--- category check 제약 조건 변경
+-- 1. category check 제약 조건 변경
 alter table public.services
   drop constraint if exists services_category_check;
 
@@ -12,7 +9,10 @@ alter table public.services
   add constraint services_category_check
   check (category in ('이벤트', '속눈썹연장', '속눈썹펌', '왁싱', '눈썹문신', '기타'));
 
--- 실제 시술 메뉴 삽입
+-- 2. 기존 서비스 비활성화 (FK 참조가 있어 삭제 불가)
+update public.services set is_active = false;
+
+-- 3. 실제 시술 메뉴 삽입
 insert into public.services (name, category, description, duration, price, sort_order) values
   -- ── 이벤트 ──────────────────────────────────────────────
   ('워터프루프속눈썹 (LED)', '이벤트', '', 90, 69000, 1),
