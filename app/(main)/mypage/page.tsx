@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { CalendarDays } from 'lucide-react';
 import { getMyReservations } from '@/lib/actions/reservation';
 import { getCurrentUserProfile } from '@/lib/actions/auth';
-import { ReservationCard } from '@/components/domain/reservation/ReservationCard';
+import { ReservationList } from '@/components/domain/reservation/ReservationList';
 import { ProfileEditForm } from './ProfileEditForm';
 
 export const metadata: Metadata = {
@@ -41,24 +41,7 @@ export default async function MyPage() {
           </Link>
         </div>
 
-        {reservations.length === 0 ? (
-          <div className="border-gray-light rounded-xl border bg-white py-12 text-center">
-            <CalendarDays size={32} strokeWidth={1.5} className="text-gray mx-auto mb-3" />
-            <p className="font-ui text-gray text-sm">아직 예약 내역이 없습니다.</p>
-            <Link
-              href="/reservation"
-              className="font-ui text-gold-dark mt-2 inline-block text-sm font-medium hover:underline"
-            >
-              예약하러 가기
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {reservations.map((r) => (
-              <ReservationCard key={r.id} reservation={r} />
-            ))}
-          </div>
-        )}
+        <ReservationList reservations={reservations} />
       </section>
     </div>
   );
