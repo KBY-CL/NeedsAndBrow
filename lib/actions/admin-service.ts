@@ -10,7 +10,7 @@ const ServiceSchema = z.object({
   name: z.string().min(1, '서비스명을 입력하세요.').max(50),
   category: z.enum(['이벤트', '속눈썹연장', '속눈썹펌', '왁싱', '눈썹문신', '기타']),
   description: z.string().max(200).optional().or(z.literal('')),
-  duration: z.coerce.number().min(10).max(300),
+  duration: z.coerce.number().min(0).max(300),
   price: z.coerce.number().min(0),
   sortOrder: z.coerce.number().default(0),
 });
@@ -91,6 +91,17 @@ export async function toggleServiceActive(id: string, isActive: boolean): Promis
   if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
 
   const { error } = await supabase.from('services').update({ is_active: isActive }).eq('id', id);
+  if (error) return { success: false, error: '상태 변경에 실패했습니다.' };
+
+  revalidatePath('/admin/services');
+  return { success: true, data: undefined };
+}
+
+export async function toggleServiceHidden(id: string, isHidden: boolean): Promise<AuthResult> {
+  const { supabase, authorized } = await requireAdmin();
+  if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
+
+  const { error } = await supabase.from('services').update({ is_hidden: isHidden }).eq('id', id);
   if (error) return { success: false, error: '상태 변경에 실패했습니다.' };
 
   revalidatePath('/admin/services');

@@ -11,7 +11,12 @@ export default async function ReservationPage() {
   const supabase = await createServerClient();
 
   const [{ data: services }, { data: blockedDates }] = await Promise.all([
-    supabase.from('services').select('*').eq('is_active', true).order('sort_order'),
+    supabase
+      .from('services')
+      .select('*')
+      .eq('is_active', true)
+      .eq('is_hidden', false)
+      .order('sort_order'),
     supabase.from('blocked_dates').select('date'),
   ]);
 

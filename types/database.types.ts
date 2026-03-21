@@ -57,6 +57,7 @@ export type Database = {
           duration: number;
           price: number;
           is_active: boolean;
+          is_hidden: boolean;
           sort_order: number;
           created_at: string;
           updated_at: string;
@@ -69,6 +70,7 @@ export type Database = {
           duration?: number;
           price: number;
           is_active?: boolean;
+          is_hidden?: boolean;
           sort_order?: number;
           created_at?: string;
           updated_at?: string;
@@ -81,6 +83,7 @@ export type Database = {
           duration?: number;
           price?: number;
           is_active?: boolean;
+          is_hidden?: boolean;
           sort_order?: number;
           created_at?: string;
           updated_at?: string;

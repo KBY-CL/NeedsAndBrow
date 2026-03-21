@@ -1,12 +1,13 @@
 'use client';
 
 import { useActionState, useState, useTransition } from 'react';
-import { Plus, Power, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Power, Pencil, Trash2, X, EyeOff, Eye, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   createService,
   updateService,
   toggleServiceActive,
+  toggleServiceHidden,
   deleteService,
 } from '@/lib/actions/admin-service';
 import type { Service, ServiceCategory } from '@/types/database.types';
@@ -77,7 +78,7 @@ function ServiceForm({
         </div>
         <div>
           <label htmlFor="price" className="font-ui text-charcoal mb-1 block text-sm font-medium">
-            가격 (원)
+            가격 (원, 0=가격 문의)
           </label>
           <input
             id="price"
@@ -145,11 +146,143 @@ function ServiceForm({
   );
 }
 
+function ServiceRow({
+  service,
+  onEdit,
+  editingId,
+  updateAction,
+  isUpdatePending,
+  updateError,
+  onCancelEdit,
+}: {
+  service: Service;
+  onEdit: (id: string) => void;
+  editingId: string | null;
+  updateAction: (payload: FormData) => void;
+  isUpdatePending: boolean;
+  updateError?: string;
+  onCancelEdit: () => void;
+}) {
+  const [deleteError, setDeleteError] = useState('');
+  const [isPendingToggle, startToggleTransition] = useTransition();
+  const [isPendingDelete, startDeleteTransition] = useTransition();
+
+  const handleToggleActive = () => {
+    startToggleTransition(async () => {
+      await toggleServiceActive(service.id, !service.is_active);
+    });
+  };
+
+  const handleToggleHidden = () => {
+    startToggleTransition(async () => {
+      await toggleServiceHidden(service.id, !service.is_hidden);
+    });
+  };
+
+  const handleDelete = () => {
+    if (!confirm('이 서비스를 삭제하시겠습니까?')) return;
+    startDeleteTransition(async () => {
+      const result = await deleteService(service.id);
+      if (!result.success && result.error) setDeleteError(result.error);
+    });
+  };
+
+  if (editingId === service.id) {
+    return (
+      <div className="border-gold shadow-soft rounded-xl border bg-white p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="font-ui text-charcoal text-sm font-semibold">서비스 수정</span>
+          <button type="button" onClick={onCancelEdit} className="text-gray hover:text-charcoal">
+            <X size={16} />
+          </button>
+        </div>
+        <ServiceForm
+          defaultValues={service}
+          action={updateAction}
+          isPending={isUpdatePending}
+          error={updateError}
+          onCancel={onCancelEdit}
+          submitLabel="저장"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        'border-gray-light shadow-soft rounded-xl border bg-white p-4',
+        !service.is_active && 'opacity-50',
+      )}
+    >
+      <div className="flex items-center justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-ui text-charcoal text-sm font-semibold">{service.name}</span>
+            <span className="font-ui bg-cream text-charcoal-light rounded-full px-2 py-0.5 text-xs">
+              {service.category}
+            </span>
+          </div>
+          <p className="font-ui text-gray mt-1 text-xs">
+            {service.price === 0 ? '가격 문의' : `${service.price.toLocaleString()}원`}
+            {service.duration > 0 && ` · ${service.duration}분`}
+          </p>
+          {service.description && (
+            <p className="font-ui text-gray mt-0.5 text-xs">{service.description}</p>
+          )}
+        </div>
+        <div className="ml-3 flex shrink-0 gap-1">
+          <button
+            type="button"
+            onClick={() => onEdit(service.id)}
+            className="text-gray hover:text-gold-dark flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-amber-50"
+            title="수정"
+          >
+            <Pencil size={15} strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={handleToggleActive}
+            disabled={isPendingToggle}
+            className={cn(
+              'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+              service.is_active
+                ? 'text-success bg-success/10 hover:bg-success/20'
+                : 'text-gray bg-gray-light hover:bg-gray-light/80',
+            )}
+            title={service.is_active ? '비활성화' : '활성화'}
+          >
+            <Power size={15} strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={handleToggleHidden}
+            disabled={isPendingToggle}
+            className="text-gray bg-gray-light hover:bg-gray-light/80 flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
+            title="숨기기"
+          >
+            <EyeOff size={15} strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={isPendingDelete}
+            className="bg-error/10 text-error hover:bg-error/20 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50"
+            title="삭제"
+          >
+            <Trash2 size={15} strokeWidth={1.5} />
+          </button>
+        </div>
+      </div>
+      {deleteError && <p className="font-ui text-error mt-2 text-xs">{deleteError}</p>}
+    </div>
+  );
+}
+
 export function AdminServiceList({ initialServices }: AdminServiceListProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [deleteError, setDeleteError] = useState<Record<string, string>>({});
-  const [isPendingDelete, startDeleteTransition] = useTransition();
+  const [showHidden, setShowHidden] = useState(false);
 
   const [createState, createAction, isCreatePending] = useActionState(createService, null);
   const [updateState, updateAction, isUpdatePending] = useActionState(
@@ -157,27 +290,23 @@ export function AdminServiceList({ initialServices }: AdminServiceListProps) {
     null,
   );
 
-  const handleToggle = async (id: string, current: boolean) => {
-    await toggleServiceActive(id, !current);
-  };
+  const visible = initialServices.filter((s) => !s.is_hidden);
+  const hidden = initialServices.filter((s) => s.is_hidden);
 
-  const handleDelete = (id: string) => {
-    if (!confirm('이 서비스를 삭제하시겠습니까?')) return;
-    startDeleteTransition(async () => {
-      const result = await deleteService(id);
-      if (!result.success && result.error) {
-        setDeleteError((prev) => ({ ...prev, [id]: result.error! }));
-      }
-    });
-  };
-
-  const handleEditStart = (id: string) => {
-    setEditingId(id);
-    setShowForm(false);
+  const rowProps = {
+    editingId,
+    updateAction,
+    isUpdatePending,
+    updateError: updateState && !updateState.success ? updateState.error : undefined,
+    onCancelEdit: () => setEditingId(null),
+    onEdit: (id: string) => {
+      setEditingId(id);
+      setShowForm(false);
+    },
   };
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Add button */}
       <button
         type="button"
@@ -185,7 +314,7 @@ export function AdminServiceList({ initialServices }: AdminServiceListProps) {
           setShowForm(!showForm);
           setEditingId(null);
         }}
-        className="font-ui bg-charcoal mb-6 inline-flex h-9 items-center gap-1.5 rounded-lg px-4 text-sm font-medium text-white transition-colors hover:bg-black"
+        className="font-ui bg-charcoal inline-flex h-9 items-center gap-1.5 rounded-lg px-4 text-sm font-medium text-white transition-colors hover:bg-black"
       >
         <Plus size={16} strokeWidth={1.5} />
         서비스 추가
@@ -193,7 +322,7 @@ export function AdminServiceList({ initialServices }: AdminServiceListProps) {
 
       {/* Create form */}
       {showForm && (
-        <div className="border-gray-light shadow-soft mb-6 rounded-xl border bg-white p-5">
+        <div className="border-gray-light shadow-soft rounded-xl border bg-white p-5">
           <ServiceForm
             action={createAction}
             isPending={isCreatePending}
@@ -204,102 +333,106 @@ export function AdminServiceList({ initialServices }: AdminServiceListProps) {
         </div>
       )}
 
-      {/* Service list */}
+      {/* 사용 중 / 비활성화 목록 */}
       <div className="space-y-2">
-        {initialServices.map((service) => (
-          <div key={service.id}>
-            {editingId === service.id ? (
-              /* Edit form */
-              <div className="border-gold shadow-soft rounded-xl border bg-white p-5">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="font-ui text-charcoal text-sm font-semibold">서비스 수정</span>
-                  <button
-                    type="button"
-                    onClick={() => setEditingId(null)}
-                    className="text-gray hover:text-charcoal"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-                <ServiceForm
-                  defaultValues={service}
-                  action={updateAction}
-                  isPending={isUpdatePending}
-                  error={updateState && !updateState.success ? updateState.error : undefined}
-                  onCancel={() => setEditingId(null)}
-                  submitLabel="저장"
-                />
-              </div>
-            ) : (
-              /* Service row */
-              <div
-                className={cn(
-                  'border-gray-light shadow-soft rounded-xl border bg-white p-4',
-                  !service.is_active && 'opacity-50',
-                )}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-ui text-charcoal text-sm font-semibold">
-                        {service.name}
-                      </span>
-                      <span className="font-ui bg-cream text-charcoal-light rounded-full px-2 py-0.5 text-xs">
-                        {service.category}
-                      </span>
-                    </div>
-                    <p className="font-ui text-gray mt-1 text-xs">
-                      {service.price === 0 ? '가격 문의' : `${service.price.toLocaleString()}원`}
-                      {service.duration > 0 && ` · ${service.duration}분`}
-                    </p>
-                    {service.description && (
-                      <p className="font-ui text-gray mt-0.5 text-xs">{service.description}</p>
-                    )}
-                  </div>
-                  <div className="ml-3 flex shrink-0 gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleEditStart(service.id)}
-                      className="text-gray hover:text-gold-dark flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-amber-50"
-                      title="수정"
-                    >
-                      <Pencil size={15} strokeWidth={1.5} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleToggle(service.id, service.is_active)}
-                      className={cn(
-                        'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
-                        service.is_active
-                          ? 'text-success bg-success/10 hover:bg-success/20'
-                          : 'text-gray bg-gray-light hover:bg-gray-light/80',
-                      )}
-                      title={service.is_active ? '비활성화' : '활성화'}
-                    >
-                      <Power size={15} strokeWidth={1.5} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(service.id)}
-                      disabled={isPendingDelete}
-                      className="bg-error/10 text-error hover:bg-error/20 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50"
-                      title="삭제"
-                    >
-                      <Trash2 size={15} strokeWidth={1.5} />
-                    </button>
-                  </div>
-                </div>
-                {deleteError[service.id] && (
-                  <p className="font-ui text-error mt-2 text-xs">{deleteError[service.id]}</p>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-        {initialServices.length === 0 && (
-          <p className="font-ui text-gray py-8 text-center text-sm">등록된 서비스가 없습니다.</p>
+        <p className="font-ui text-charcoal text-xs font-semibold tracking-wider uppercase">
+          서비스 목록 ({visible.length})
+        </p>
+        {visible.length === 0 && (
+          <p className="font-ui text-gray py-6 text-center text-sm">등록된 서비스가 없습니다.</p>
         )}
+        {visible.map((service) => (
+          <ServiceRow key={service.id} service={service} {...rowProps} />
+        ))}
       </div>
+
+      {/* 숨긴 서비스 목록 */}
+      {hidden.length > 0 && (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => setShowHidden((v) => !v)}
+            className="font-ui text-gray hover:text-charcoal flex items-center gap-1 text-xs font-semibold tracking-wider uppercase"
+          >
+            {showHidden ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            숨긴 서비스 ({hidden.length})
+          </button>
+
+          {showHidden && (
+            <div className="space-y-2">
+              {hidden.map((service) => (
+                <div
+                  key={service.id}
+                  className="border-gray-light rounded-xl border bg-white p-4 opacity-40"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-ui text-charcoal text-sm font-semibold">
+                          {service.name}
+                        </span>
+                        <span className="font-ui bg-cream text-charcoal-light rounded-full px-2 py-0.5 text-xs">
+                          {service.category}
+                        </span>
+                      </div>
+                      <p className="font-ui text-gray mt-1 text-xs">
+                        {service.price === 0 ? '가격 문의' : `${service.price.toLocaleString()}원`}
+                        {service.duration > 0 && ` · ${service.duration}분`}
+                      </p>
+                    </div>
+                    <div className="ml-3 flex shrink-0 gap-1">
+                      <HiddenServiceActions service={service} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
+  );
+}
+
+function HiddenServiceActions({ service }: { service: Service }) {
+  const [deleteError, setDeleteError] = useState('');
+  const [isPending, startTransition] = useTransition();
+
+  const handleRestore = () => {
+    startTransition(async () => {
+      await toggleServiceHidden(service.id, false);
+    });
+  };
+
+  const handleDelete = () => {
+    if (!confirm('이 서비스를 삭제하시겠습니까?')) return;
+    startTransition(async () => {
+      const result = await deleteService(service.id);
+      if (!result.success && result.error) setDeleteError(result.error);
+    });
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={handleRestore}
+        disabled={isPending}
+        className="text-gray hover:text-charcoal flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100 disabled:opacity-50"
+        title="복원"
+      >
+        <Eye size={15} strokeWidth={1.5} />
+      </button>
+      <button
+        type="button"
+        onClick={handleDelete}
+        disabled={isPending}
+        className="bg-error/10 text-error hover:bg-error/20 flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50"
+        title="삭제"
+      >
+        <Trash2 size={15} strokeWidth={1.5} />
+      </button>
+      {deleteError && <p className="font-ui text-error mt-1 text-xs">{deleteError}</p>}
+    </>
   );
 }

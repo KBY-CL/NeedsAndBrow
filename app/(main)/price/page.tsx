@@ -24,6 +24,7 @@ export default async function PricePage() {
     .from('services')
     .select('*')
     .eq('is_active', true)
+    .eq('is_hidden', false)
     .order('sort_order');
 
   const grouped = (services ?? []).reduce<Record<ServiceCategory, typeof services>>(
