@@ -74,7 +74,7 @@ export function AdminSidebar() {
       {/* Mobile top bar */}
       <div className="bg-charcoal fixed top-0 right-0 left-0 z-40 flex h-14 items-center justify-between px-4 md:hidden">
         <Link href="/admin" className="font-display text-sm tracking-wider text-white">
-          Beauty Admin
+          Needs Ann Brow Admin
         </Link>
         <button
           type="button"
@@ -107,7 +107,7 @@ export function AdminSidebar() {
             onClick={() => setMobileOpen(false)}
             className="font-display text-sm tracking-wider text-white"
           >
-            Beauty Admin
+            Needs Ann Brow Admin
           </Link>
           <button
             type="button"
@@ -137,7 +137,7 @@ export function AdminSidebar() {
       <aside className="bg-charcoal hidden h-screen w-60 shrink-0 flex-col md:flex">
         <div className="border-charcoal-light flex h-14 items-center border-b px-5">
           <Link href="/admin" className="font-display text-sm tracking-wider text-white">
-            Beauty Admin
+            Needs Ann Brow Admin
           </Link>
         </div>
         <nav className="flex-1 overflow-y-auto px-3 py-4">
