@@ -30,10 +30,45 @@ function formatDateTime(dateStr: string | null) {
   });
 }
 
+type Period = 'all' | 'today' | 'week' | 'month' | 'year';
+
+const periodLabels: Record<Period, string> = {
+  all: '전체',
+  today: '오늘',
+  week: '이번 주',
+  month: '이번 달',
+  year: '올해',
+};
+
+function getPeriodStart(period: Period): Date | null {
+  if (period === 'all') return null;
+  const now = new Date();
+  switch (period) {
+    case 'today':
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    case 'week': {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      d.setDate(d.getDate() - d.getDay());
+      return d;
+    }
+    case 'month':
+      return new Date(now.getFullYear(), now.getMonth(), 1);
+    case 'year':
+      return new Date(now.getFullYear(), 0, 1);
+  }
+}
+
 export function AdminMemberTable({ members }: { members: MemberRow[] }) {
   const [search, setSearch] = useState('');
+  const [period, setPeriod] = useState<Period>('all');
 
   const filtered = members.filter((m) => {
+    // 기간 필터
+    if (period !== 'all') {
+      const start = getPeriodStart(period);
+      if (start && new Date(m.created_at) < start) return false;
+    }
+    // 검색 필터
     if (!search) return true;
     const q = search.toLowerCase();
     return (
@@ -45,6 +80,25 @@ export function AdminMemberTable({ members }: { members: MemberRow[] }) {
 
   return (
     <div>
+      {/* 기간 필터 */}
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {(Object.keys(periodLabels) as Period[]).map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => setPeriod(p)}
+            className={cn(
+              'font-ui rounded-lg px-3 py-1.5 text-xs font-medium transition-colors',
+              period === p
+                ? 'bg-charcoal text-white'
+                : 'bg-gray-light text-gray hover:bg-gray-light/80',
+            )}
+          >
+            {periodLabels[p]}
+          </button>
+        ))}
+      </div>
+
       <div className="mb-4 flex items-center justify-between gap-3">
         <p className="font-ui text-gray shrink-0 text-sm">총 {filtered.length}명</p>
         <div className="relative max-w-xs flex-1">
