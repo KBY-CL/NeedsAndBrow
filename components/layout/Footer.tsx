@@ -1,13 +1,21 @@
 import Link from 'next/link';
 import { Phone, MapPin, Clock } from 'lucide-react';
+import { getShopInfo } from '@/lib/actions/shop';
 
-export function Footer() {
+export async function Footer() {
+  const shop = await getShopInfo();
+
+  const hours = (shop?.hours ?? {}) as Record<string, string>;
+  const firstHour = Object.values(hours)[0] ?? '10:00 - 20:00';
+
   return (
     <footer className="bg-charcoal text-cream pb-20 md:pb-0">
       <div className="mx-auto max-w-screen-lg px-5 py-10 md:px-8">
         {/* Brand */}
         <div className="mb-8">
-          <span className="font-display text-xl tracking-wider text-white">Needs Ann Brow</span>
+          <span className="font-display text-xl tracking-wider text-white">
+            {shop?.name ?? 'Needs Ann Brow'}
+          </span>
           <p className="font-ui text-gray mt-2 text-sm">속눈썹 연장 &middot; 반영구 시술 전문</p>
         </div>
 
@@ -18,15 +26,15 @@ export function Footer() {
             <ul className="font-ui text-gray space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Phone size={14} strokeWidth={1.5} />
-                <span>0507-1489-4666</span>
+                <span>{shop?.phone ?? '-'}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={14} strokeWidth={1.5} className="mt-0.5 shrink-0" />
-                <span>서울 강서구 화곡로54길 43 2층</span>
+                <span>{shop?.address ?? '-'}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Clock size={14} strokeWidth={1.5} />
-                <span>매일 10:00 - 20:00</span>
+                <span>{firstHour}</span>
               </li>
             </ul>
           </div>
@@ -55,7 +63,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="border-charcoal-light font-ui text-gray mt-10 border-t pt-6 text-center text-xs">
-          &copy; {new Date().getFullYear()} Needs Ann Brow. All rights reserved.
+          &copy; {new Date().getFullYear()} {shop?.name ?? 'Needs Ann Brow'}. All rights reserved.
         </div>
       </div>
     </footer>
