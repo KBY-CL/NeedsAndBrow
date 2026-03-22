@@ -18,7 +18,7 @@ export function LoginForm() {
     }
   }, [state, returnUrl]);
 
-  async function handleOAuth(provider: 'kakao' | 'google') {
+  async function handleOAuth(provider: 'google') {
     const result = await getOAuthUrl(provider);
     if (result.success) {
       window.location.href = result.data;

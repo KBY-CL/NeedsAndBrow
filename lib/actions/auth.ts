@@ -114,7 +114,7 @@ export async function getOAuthUrl(provider: AuthProvider): Promise<AuthResult<st
     provider,
     options: {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
-      scopes: provider === 'kakao' ? 'profile_nickname profile_image' : undefined,
+      scopes: undefined,
     },
   });
 
