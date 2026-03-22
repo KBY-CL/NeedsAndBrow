@@ -83,14 +83,6 @@ export function LoginForm() {
       <div className="space-y-3">
         <button
           type="button"
-          onClick={() => handleOAuth('kakao')}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] py-3 text-sm font-medium text-[#191919] transition-colors hover:bg-[#F0D900]"
-        >
-          카카오로 로그인
-        </button>
-
-        <button
-          type="button"
           onClick={() => handleOAuth('google')}
           className="border-gray-light text-charcoal hover:bg-cream-dark flex w-full items-center justify-center gap-2 rounded-lg border py-3 text-sm font-medium transition-colors"
         >
