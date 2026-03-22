@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
-import { getShopInfo } from '@/lib/actions/shop';
+import { getShopInfo } from '@/lib/queries/shop';
 
 export const metadata: Metadata = {
   title: '오시는 길',

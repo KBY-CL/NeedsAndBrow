@@ -1,24 +1,23 @@
-'use client';
-
-import { useState, useCallback } from 'react';
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { BottomNav } from '@/components/layout/BottomNav';
-import { MobileMenu } from '@/components/layout/MobileMenu';
+import { MainLayoutShell } from './MainLayoutShell';
+import { getShopInfo } from '@/lib/queries/shop';
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const handleMenuClose = useCallback(() => setMenuOpen(false), []);
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
+  const shop = await getShopInfo();
+
+  const footerShop = shop
+    ? {
+        name: shop.name,
+        phone: shop.phone,
+        address: shop.address,
+        hours: (shop.hours ?? {}) as Record<string, string>,
+      }
+    : undefined;
 
   return (
     <div className="bg-cream flex min-h-screen flex-col">
-      <Header onMenuOpen={() => setMenuOpen(true)} />
-      <MobileMenu isOpen={menuOpen} onClose={handleMenuClose} />
-
-      <main className="flex-1 pb-16 md:pb-0">{children}</main>
-
-      <Footer />
-      <BottomNav />
+      <MainLayoutShell>{children}</MainLayoutShell>
+      <Footer shop={footerShop} />
     </div>
   );
 }

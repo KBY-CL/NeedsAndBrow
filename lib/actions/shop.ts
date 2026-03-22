@@ -1,15 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/actions/utils';
 import type { AuthResult } from '@/lib/domain/auth/types';
-
-export async function getShopInfo() {
-  const supabase = await createServerClient();
-  const { data } = await supabase.from('shop_info').select('*').eq('id', 1).single();
-  return data;
-}
 
 export async function updateShopInfo(_: unknown, formData: FormData): Promise<AuthResult> {
   const { supabase, authorized } = await requireAdmin();

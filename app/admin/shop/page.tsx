@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getShopInfo } from '@/lib/actions/shop';
+import { getShopInfo } from '@/lib/queries/shop';
 import { ShopEditForm } from './ShopEditForm';
 
 export const metadata: Metadata = { title: '매장 정보 관리' };

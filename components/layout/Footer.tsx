@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import { Phone, MapPin, Clock } from 'lucide-react';
-import { getShopInfo } from '@/lib/actions/shop';
 
-export async function Footer() {
-  const shop = await getShopInfo();
+export interface FooterShopData {
+  name: string;
+  phone: string;
+  address: string;
+  hours: Record<string, string>;
+}
 
-  const hours = (shop?.hours ?? {}) as Record<string, string>;
-  const firstHour = Object.values(hours)[0] ?? '10:00 - 20:00';
+export function Footer({ shop }: { shop?: FooterShopData }) {
+  const firstHour = shop ? (Object.values(shop.hours)[0] ?? '') : '10:00 - 20:00';
 
   return (
     <footer className="bg-charcoal text-cream pb-20 md:pb-0">
@@ -32,10 +35,12 @@ export async function Footer() {
                 <MapPin size={14} strokeWidth={1.5} className="mt-0.5 shrink-0" />
                 <span>{shop?.address ?? '-'}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Clock size={14} strokeWidth={1.5} />
-                <span>{firstHour}</span>
-              </li>
+              {firstHour && (
+                <li className="flex items-center gap-2">
+                  <Clock size={14} strokeWidth={1.5} />
+                  <span>{firstHour}</span>
+                </li>
+              )}
             </ul>
           </div>
 
