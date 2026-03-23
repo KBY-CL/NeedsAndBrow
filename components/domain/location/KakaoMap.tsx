@@ -42,62 +42,68 @@ declare global {
   }
 }
 
-function loadScript(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) {
-      resolve();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Script load failed'));
-    document.head.appendChild(script);
-  });
-}
-
 export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(() =>
+    appKey ? 'loading' : 'error',
+  );
 
   useEffect(() => {
+    if (!appKey) return;
+
     let cancelled = false;
 
     const init = async () => {
       try {
+        // 스크립트 로드
         const src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false&libraries=services`;
-        await loadScript(src);
+        await new Promise<void>((resolve, reject) => {
+          const existing = document.querySelector(`script[src="${src}"]`);
+          if (existing) {
+            // 이미 로드된 경우
+            if (window.kakao?.maps) {
+              resolve();
+            } else {
+              // 스크립트 태그는 있지만 로드 실패한 경우 → 재시도
+              existing.remove();
+              const script = document.createElement('script');
+              script.src = src;
+              script.onload = () => resolve();
+              script.onerror = () => reject(new Error('카카오맵 SDK 로드 실패'));
+              document.head.appendChild(script);
+            }
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('카카오맵 SDK 로드 실패'));
+          document.head.appendChild(script);
+        });
 
-        if (cancelled || !mapRef.current) return;
+        if (cancelled || !mapRef.current || !window.kakao?.maps) return;
 
+        // SDK 초기화
         window.kakao.maps.load(() => {
           if (cancelled || !mapRef.current) return;
-          console.log('[KakaoMap] SDK loaded, searching address:', address);
 
           const geocoder = new window.kakao.maps.services.Geocoder();
 
           geocoder.addressSearch(address, (result, geoStatus) => {
-            console.log('[KakaoMap] addressSearch status:', geoStatus, 'results:', result?.length);
             if (cancelled || !mapRef.current) return;
 
             if (geoStatus === window.kakao.maps.services.Status.OK && result[0]) {
-              createMap(parseFloat(result[0].y), parseFloat(result[0].x));
+              renderMap(parseFloat(result[0].y), parseFloat(result[0].x));
               return;
             }
 
             // fallback: 키워드 검색
             const places = new window.kakao.maps.services.Places();
             places.keywordSearch(address, (placeResult, placeStatus) => {
-              console.log(
-                '[KakaoMap] keywordSearch status:',
-                placeStatus,
-                'results:',
-                placeResult?.length,
-              );
               if (cancelled || !mapRef.current) return;
 
               if (placeStatus === window.kakao.maps.services.Status.OK && placeResult[0]) {
-                createMap(parseFloat(placeResult[0].y), parseFloat(placeResult[0].x));
+                renderMap(parseFloat(placeResult[0].y), parseFloat(placeResult[0].x));
               } else {
                 setStatus('error');
               }
@@ -105,12 +111,12 @@ export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
           });
         });
       } catch (err) {
-        console.error('[KakaoMap] init error:', err);
+        console.error('[KakaoMap]', err);
         if (!cancelled) setStatus('error');
       }
     };
 
-    const createMap = (lat: number, lng: number) => {
+    const renderMap = (lat: number, lng: number) => {
       if (!mapRef.current) return;
       const coords = new window.kakao.maps.LatLng(lat, lng);
       const map = new window.kakao.maps.Map(mapRef.current, {
@@ -134,7 +140,7 @@ export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
   if (status === 'error') {
     return (
       <div className="bg-cream border-gray-light mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border">
-        <p className="font-ui text-gray text-sm">주소를 지도에서 찾을 수 없습니다.</p>
+        <p className="font-ui text-gray text-sm">지도를 불러올 수 없습니다.</p>
       </div>
     );
   }

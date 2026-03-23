@@ -21,11 +21,11 @@ export default async function LocationPage() {
       </div>
 
       {/* Map */}
-      {shop?.address && process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ? (
+      {shop?.address ? (
         <KakaoMap
           address={shop.address}
           name={shop.name}
-          appKey={process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}
+          appKey={process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ?? ''}
         />
       ) : (
         <div className="bg-cream border-gray-light mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border">
