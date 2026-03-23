@@ -51,25 +51,25 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
           <div className="space-y-3">
             <h4 className="font-ui text-sm font-semibold tracking-wide text-white">바로가기</h4>
             <ul className="font-ui text-gray space-y-2 text-sm">
+              <FooterLink href="/gallery">갤러리</FooterLink>
+              <FooterLink href="/price">가격표</FooterLink>
+              <FooterLink href="/reservation">예약하기</FooterLink>
+              <FooterLink href="/location">오시는 길</FooterLink>
+              <FooterLink href="/inquiry">상담 문의</FooterLink>
+              <FooterLink href="/reviews">시술 후기</FooterLink>
+              <FooterLink href="/events">이벤트</FooterLink>
+            </ul>
+          </div>
+
+          {/* External */}
+          <div className="space-y-3">
+            <h4 className="font-ui text-sm font-semibold tracking-wide text-white">외부 서비스</h4>
+            <ul className="font-ui text-gray space-y-2 text-sm">
               {shop?.instagram_url && (
                 <ExternalLink href={shop.instagram_url}>인스타그램</ExternalLink>
               )}
               {shop?.naver_url && <ExternalLink href={shop.naver_url}>네이버</ExternalLink>}
               {shop?.daangn_url && <ExternalLink href={shop.daangn_url}>당근마켓</ExternalLink>}
-              <FooterLink href="/gallery">갤러리</FooterLink>
-              <FooterLink href="/price">가격표</FooterLink>
-              <FooterLink href="/reservation">예약하기</FooterLink>
-              <FooterLink href="/location">오시는 길</FooterLink>
-            </ul>
-          </div>
-
-          {/* Customer */}
-          <div className="space-y-3">
-            <h4 className="font-ui text-sm font-semibold tracking-wide text-white">고객 서비스</h4>
-            <ul className="font-ui text-gray space-y-2 text-sm">
-              <FooterLink href="/inquiry">상담 문의</FooterLink>
-              <FooterLink href="/reviews">시술 후기</FooterLink>
-              <FooterLink href="/events">이벤트</FooterLink>
             </ul>
           </div>
         </div>
