@@ -42,11 +42,6 @@ declare global {
   }
 }
 
-function extractBaseAddress(address: string): string {
-  const match = address.match(/^(.+\d+(?:-\d+)?)/);
-  return match?.[1] ?? address;
-}
-
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
     if (document.querySelector(`script[src="${src}"]`)) {
@@ -77,11 +72,12 @@ export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
 
         window.kakao.maps.load(() => {
           if (cancelled || !mapRef.current) return;
+          console.log('[KakaoMap] SDK loaded, searching address:', address);
 
           const geocoder = new window.kakao.maps.services.Geocoder();
-          const baseAddress = extractBaseAddress(address);
 
-          geocoder.addressSearch(baseAddress, (result, geoStatus) => {
+          geocoder.addressSearch(address, (result, geoStatus) => {
+            console.log('[KakaoMap] addressSearch status:', geoStatus, 'results:', result?.length);
             if (cancelled || !mapRef.current) return;
 
             if (geoStatus === window.kakao.maps.services.Status.OK && result[0]) {
@@ -91,7 +87,13 @@ export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
 
             // fallback: 키워드 검색
             const places = new window.kakao.maps.services.Places();
-            places.keywordSearch(baseAddress, (placeResult, placeStatus) => {
+            places.keywordSearch(address, (placeResult, placeStatus) => {
+              console.log(
+                '[KakaoMap] keywordSearch status:',
+                placeStatus,
+                'results:',
+                placeResult?.length,
+              );
               if (cancelled || !mapRef.current) return;
 
               if (placeStatus === window.kakao.maps.services.Status.OK && placeResult[0]) {
@@ -102,7 +104,8 @@ export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
             });
           });
         });
-      } catch {
+      } catch (err) {
+        console.error('[KakaoMap] init error:', err);
         if (!cancelled) setStatus('error');
       }
     };
