@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Playfair_Display, Cormorant_Garamond, DM_Sans, Noto_Sans_KR } from 'next/font/google';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import './globals.css';
@@ -30,6 +30,13 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://needs-ann-brow.vercel.app';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
