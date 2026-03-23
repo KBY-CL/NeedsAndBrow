@@ -1,6 +1,8 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
+import { Search } from 'lucide-react';
+import Script from 'next/script';
 import { updateShopInfo } from '@/lib/actions/shop';
 
 interface ShopData {
@@ -13,56 +15,112 @@ interface ShopData {
   hours_text: string;
 }
 
+declare global {
+  interface Window {
+    daum: {
+      Postcode: new (options: {
+        oncomplete: (data: { roadAddress: string; jibunAddress: string; zonecode: string }) => void;
+      }) => { open: () => void };
+    };
+  }
+}
+
 export function ShopEditForm({ shop }: { shop: ShopData }) {
   const [state, action, isPending] = useActionState(updateShopInfo, null);
+  const [address, setAddress] = useState(shop.address);
+  const [sdkLoaded, setSdkLoaded] = useState(false);
+
+  const handleSearchAddress = () => {
+    if (!window.daum?.Postcode) return;
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        setAddress(data.roadAddress || data.jibunAddress);
+      },
+    }).open();
+  };
 
   return (
-    <form action={action} className="space-y-5">
-      <Field label="매장명" name="name" defaultValue={shop.name} required />
-      <Field label="주소" name="address" defaultValue={shop.address} />
-      <Field label="전화번호" name="phone" defaultValue={shop.phone} />
-      <Field label="위치 안내" name="parking_info" defaultValue={shop.parking_info ?? ''} />
-      <Field
-        label="네이버 URL"
-        name="kakao_url"
-        defaultValue={shop.kakao_url ?? ''}
-        placeholder="https://map.naver.com/..."
+    <>
+      <Script
+        src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+        strategy="afterInteractive"
+        onLoad={() => setSdkLoaded(true)}
       />
-      <Field
-        label="인스타그램 URL"
-        name="instagram_url"
-        defaultValue={shop.instagram_url ?? ''}
-        placeholder="https://instagram.com/..."
-      />
+      <form action={action} className="space-y-5">
+        <Field label="매장명" name="name" defaultValue={shop.name} required />
 
-      <div>
-        <label htmlFor="hours" className="font-ui text-charcoal mb-1 block text-sm font-medium">
-          운영시간
-        </label>
-        <textarea
-          id="hours"
-          name="hours"
-          rows={3}
-          defaultValue={shop.hours_text}
-          placeholder={'월-일 10:00 - 20:00\n공휴일 휴무'}
-          className="font-ui text-charcoal border-gray-light focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-4 py-3 text-sm focus:ring-1"
+        {/* 주소 검색 */}
+        <div>
+          <label className="font-ui text-charcoal mb-1 block text-sm font-medium">주소</label>
+          <div className="flex gap-2">
+            <input
+              name="address"
+              value={address}
+              readOnly
+              placeholder="주소 검색 버튼을 눌러주세요"
+              className="font-ui text-charcoal border-gray-light bg-cream/50 w-full rounded-lg border px-4 py-3 text-sm"
+            />
+            <button
+              type="button"
+              onClick={handleSearchAddress}
+              disabled={!sdkLoaded}
+              className="font-ui bg-charcoal flex shrink-0 items-center gap-1 rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-black disabled:opacity-50"
+            >
+              <Search size={14} />
+              검색
+            </button>
+          </div>
+        </div>
+
+        <Field label="전화번호" name="phone" defaultValue={shop.phone} />
+        <Field
+          label="위치 안내 (상세)"
+          name="parking_info"
+          defaultValue={shop.parking_info ?? ''}
+          placeholder="예: 강서경찰서 뒷편 금호어울림 후문 상가 2층"
         />
-        <p className="font-ui text-gray mt-1 text-xs">
-          입력한 내용이 그대로 표시됩니다. 줄바꿈으로 구분하세요.
-        </p>
-      </div>
+        <Field
+          label="네이버 URL"
+          name="kakao_url"
+          defaultValue={shop.kakao_url ?? ''}
+          placeholder="https://map.naver.com/..."
+        />
+        <Field
+          label="인스타그램 URL"
+          name="instagram_url"
+          defaultValue={shop.instagram_url ?? ''}
+          placeholder="https://instagram.com/..."
+        />
 
-      {state?.success && <p className="font-ui text-success text-sm">저장되었습니다.</p>}
-      {state && !state.success && <p className="font-ui text-error text-sm">{state.error}</p>}
+        <div>
+          <label htmlFor="hours" className="font-ui text-charcoal mb-1 block text-sm font-medium">
+            운영시간
+          </label>
+          <textarea
+            id="hours"
+            name="hours"
+            rows={3}
+            defaultValue={shop.hours_text}
+            placeholder={'월-일 10:00 - 20:00\n공휴일 휴무'}
+            className="font-ui text-charcoal border-gray-light focus:border-gold focus:ring-gold/30 w-full rounded-lg border px-4 py-3 text-sm focus:ring-1"
+          />
+          <p className="font-ui text-gray mt-1 text-xs">
+            입력한 내용이 그대로 표시됩니다. 줄바꿈으로 구분하세요.
+          </p>
+        </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="font-ui bg-gold hover:bg-gold-dark h-10 rounded-lg px-6 text-sm font-medium text-white transition-colors disabled:opacity-50"
-      >
-        {isPending ? '저장 중...' : '저장'}
-      </button>
-    </form>
+        {state?.success && <p className="font-ui text-success text-sm">저장되었습니다.</p>}
+        {state && !state.success && <p className="font-ui text-error text-sm">{state.error}</p>}
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className="font-ui bg-gold hover:bg-gold-dark h-10 rounded-lg px-6 text-sm font-medium text-white transition-colors disabled:opacity-50"
+        >
+          {isPending ? '저장 중...' : '저장'}
+        </button>
+      </form>
+    </>
   );
 }
 
