@@ -87,23 +87,24 @@ export function KakaoMap({ address, name, appKey }: KakaoMapProps) {
         window.kakao.maps.load(() => {
           if (cancelled || !mapRef.current) return;
 
-          const geocoder = new window.kakao.maps.services.Geocoder();
+          const places = new window.kakao.maps.services.Places();
 
-          geocoder.addressSearch(address, (result, geoStatus) => {
+          // 1차: 매장명으로 키워드 검색 (카카오맵에 등록된 정확한 위치)
+          places.keywordSearch(name, (placeResult, placeStatus) => {
             if (cancelled || !mapRef.current) return;
 
-            if (geoStatus === window.kakao.maps.services.Status.OK && result[0]) {
-              renderMap(parseFloat(result[0].y), parseFloat(result[0].x));
+            if (placeStatus === window.kakao.maps.services.Status.OK && placeResult[0]) {
+              renderMap(parseFloat(placeResult[0].y), parseFloat(placeResult[0].x));
               return;
             }
 
-            // fallback: 키워드 검색
-            const places = new window.kakao.maps.services.Places();
-            places.keywordSearch(address, (placeResult, placeStatus) => {
+            // 2차: 주소로 지오코딩
+            const geocoder = new window.kakao.maps.services.Geocoder();
+            geocoder.addressSearch(address, (geoResult, geoStatus) => {
               if (cancelled || !mapRef.current) return;
 
-              if (placeStatus === window.kakao.maps.services.Status.OK && placeResult[0]) {
-                renderMap(parseFloat(placeResult[0].y), parseFloat(placeResult[0].x));
+              if (geoStatus === window.kakao.maps.services.Status.OK && geoResult[0]) {
+                renderMap(parseFloat(geoResult[0].y), parseFloat(geoResult[0].x));
               } else {
                 setStatus('error');
               }
