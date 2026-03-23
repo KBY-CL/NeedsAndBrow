@@ -4,10 +4,8 @@ import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 
 interface KakaoMapProps {
-  lat: number;
-  lng: number;
-  name: string;
   address: string;
+  name: string;
 }
 
 declare global {
@@ -21,12 +19,21 @@ declare global {
         InfoWindow: new (options: { content: string }) => {
           open: (map: unknown, marker: unknown) => void;
         };
+        services: {
+          Geocoder: new () => {
+            addressSearch: (
+              address: string,
+              callback: (result: Array<{ y: string; x: string }>, status: string) => void,
+            ) => void;
+          };
+          Status: { OK: string };
+        };
       };
     };
   }
 }
 
-export function KakaoMap({ lat, lng, name }: KakaoMapProps) {
+export function KakaoMap({ address, name }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
 
@@ -38,21 +45,29 @@ export function KakaoMap({ lat, lng, name }: KakaoMapProps) {
       if (!mapRef.current || initializedRef.current) return;
       initializedRef.current = true;
 
-      const position = new window.kakao.maps.LatLng(lat, lng);
-      const map = new window.kakao.maps.Map(mapRef.current, {
-        center: position,
-        level: 3,
-      });
+      const geocoder = new window.kakao.maps.services.Geocoder();
 
-      const marker = new window.kakao.maps.Marker({
-        map,
-        position,
-      });
+      geocoder.addressSearch(address, (result, status) => {
+        if (status !== window.kakao.maps.services.Status.OK || !result[0]) return;
+        if (!mapRef.current) return;
 
-      const infoWindow = new window.kakao.maps.InfoWindow({
-        content: `<div style="padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap;">${name}</div>`,
+        const coords = new window.kakao.maps.LatLng(
+          parseFloat(result[0].y),
+          parseFloat(result[0].x),
+        );
+
+        const map = new window.kakao.maps.Map(mapRef.current, {
+          center: coords,
+          level: 3,
+        });
+
+        const marker = new window.kakao.maps.Marker({ map, position: coords });
+
+        const infoWindow = new window.kakao.maps.InfoWindow({
+          content: `<div style="padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap;">${name}</div>`,
+        });
+        infoWindow.open(map, marker);
       });
-      infoWindow.open(map, marker);
     });
   };
 
@@ -66,7 +81,7 @@ export function KakaoMap({ lat, lng, name }: KakaoMapProps) {
   return (
     <>
       <Script
-        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false`}
+        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&libraries=services`}
         strategy="afterInteractive"
         onLoad={initMap}
       />

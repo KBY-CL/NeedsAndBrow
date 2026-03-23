@@ -21,13 +21,13 @@ export default async function LocationPage() {
       </div>
 
       {/* Map */}
-      {shop?.map_lat && shop?.map_lng ? (
-        <KakaoMap lat={shop.map_lat} lng={shop.map_lng} name={shop.name} address={shop.address} />
+      {shop?.address ? (
+        <KakaoMap address={shop.address} name={shop.name} />
       ) : (
         <div className="bg-cream border-gray-light mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border">
           <div className="text-center">
             <MapPin size={32} strokeWidth={1.5} className="text-gold mx-auto mb-2" />
-            <p className="font-ui text-gray text-sm">지도 좌표가 설정되지 않았습니다.</p>
+            <p className="font-ui text-gray text-sm">주소가 등록되지 않았습니다.</p>
           </div>
         </div>
       )}
