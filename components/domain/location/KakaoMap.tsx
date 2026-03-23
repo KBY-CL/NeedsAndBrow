@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
 
 interface KakaoMapProps {
@@ -26,6 +26,15 @@ declare global {
               callback: (result: Array<{ y: string; x: string }>, status: string) => void,
             ) => void;
           };
+          Places: new () => {
+            keywordSearch: (
+              keyword: string,
+              callback: (
+                result: Array<{ y: string; x: string; place_name: string }>,
+                status: string,
+              ) => void,
+            ) => void;
+          };
           Status: { OK: string };
         };
       };
@@ -33,9 +42,31 @@ declare global {
   }
 }
 
+// 도로명 주소 부분만 추출 (건물명, 층수 등 제거)
+function extractBaseAddress(address: string): string {
+  // "서울 강서구 화곡로54길 43 근린생활시설동 2층" → "서울 강서구 화곡로54길 43"
+  const match = address.match(/^(.+\d+(?:-\d+)?)/);
+  return match?.[1] ?? address;
+}
+
 export function KakaoMap({ address, name }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
+  const [error, setError] = useState(false);
+
+  const createMap = (lat: number, lng: number) => {
+    if (!mapRef.current) return;
+    const coords = new window.kakao.maps.LatLng(lat, lng);
+    const map = new window.kakao.maps.Map(mapRef.current, {
+      center: coords,
+      level: 3,
+    });
+    const marker = new window.kakao.maps.Marker({ map, position: coords });
+    const infoWindow = new window.kakao.maps.InfoWindow({
+      content: `<div style="padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap;">${name}</div>`,
+    });
+    infoWindow.open(map, marker);
+  };
 
   const initMap = () => {
     if (!mapRef.current || initializedRef.current) return;
@@ -46,27 +77,32 @@ export function KakaoMap({ address, name }: KakaoMapProps) {
       initializedRef.current = true;
 
       const geocoder = new window.kakao.maps.services.Geocoder();
+      const baseAddress = extractBaseAddress(address);
 
-      geocoder.addressSearch(address, (result, status) => {
-        if (status !== window.kakao.maps.services.Status.OK || !result[0]) return;
-        if (!mapRef.current) return;
+      // 1차: 도로명 주소 검색
+      geocoder.addressSearch(baseAddress, (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK && result[0]) {
+          createMap(parseFloat(result[0].y), parseFloat(result[0].x));
+          return;
+        }
 
-        const coords = new window.kakao.maps.LatLng(
-          parseFloat(result[0].y),
-          parseFloat(result[0].x),
-        );
+        // 2차: 키워드 검색 (매장명 + 주소)
+        const places = new window.kakao.maps.services.Places();
+        places.keywordSearch(`${name} ${baseAddress}`, (placeResult, placeStatus) => {
+          if (placeStatus === window.kakao.maps.services.Status.OK && placeResult[0]) {
+            createMap(parseFloat(placeResult[0].y), parseFloat(placeResult[0].x));
+            return;
+          }
 
-        const map = new window.kakao.maps.Map(mapRef.current, {
-          center: coords,
-          level: 3,
+          // 3차: 주소만으로 키워드 검색
+          places.keywordSearch(baseAddress, (lastResult, lastStatus) => {
+            if (lastStatus === window.kakao.maps.services.Status.OK && lastResult[0]) {
+              createMap(parseFloat(lastResult[0].y), parseFloat(lastResult[0].x));
+            } else {
+              setError(true);
+            }
+          });
         });
-
-        const marker = new window.kakao.maps.Marker({ map, position: coords });
-
-        const infoWindow = new window.kakao.maps.InfoWindow({
-          content: `<div style="padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap;">${name}</div>`,
-        });
-        infoWindow.open(map, marker);
       });
     });
   };
@@ -77,6 +113,14 @@ export function KakaoMap({ address, name }: KakaoMapProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (error) {
+    return (
+      <div className="bg-cream border-gray-light mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border">
+        <p className="font-ui text-gray text-sm">주소를 지도에서 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
     <>
