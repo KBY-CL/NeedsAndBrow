@@ -3,11 +3,25 @@ import { render, screen } from '@testing-library/react';
 import { InquiryDetail } from '@/app/(main)/inquiry/[id]/InquiryDetail';
 import type { Inquiry } from '@/types/database.types';
 
-// Mock the server action
+// Mock the server actions
 vi.mock('@/lib/actions/inquiry', () => ({
   verifyInquiryPassword: vi.fn(),
-  updateInquiry: vi.fn(),
+  updateInquiry: Object.assign(vi.fn(), { bind: vi.fn(() => vi.fn()) }),
   deleteInquiry: vi.fn(),
+}));
+
+// Mock useActionState to avoid server action issues in tests
+vi.mock('react', async () => {
+  const actual = await vi.importActual('react');
+  return {
+    ...actual,
+    useActionState: vi.fn(() => [null, vi.fn(), false]),
+  };
+});
+
+// Mock next/navigation
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() })),
 }));
 
 type InquiryRow = Inquiry & { profile: { name: string } | null };
