@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
 import { getShopInfo } from '@/lib/queries/shop';
+import { KakaoMap } from '@/components/domain/location/KakaoMap';
 
 export const metadata: Metadata = {
   title: '오시는 길',
@@ -19,17 +20,17 @@ export default async function LocationPage() {
         <p className="font-ui text-gray mt-2 text-sm">Needs Ann Brow 매장 안내</p>
       </div>
 
-      {/* Map placeholder */}
-      <div className="bg-cream border-gray-light mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border">
-        <div className="text-center">
-          <MapPin size={32} strokeWidth={1.5} className="text-gold mx-auto mb-2" />
-          <p className="font-ui text-gray text-sm">
-            {shop?.map_lat && shop?.map_lng
-              ? '카카오맵 연동 예정'
-              : '지도 영역 — 카카오맵 API 키 설정 후 표시됩니다'}
-          </p>
+      {/* Map */}
+      {shop?.map_lat && shop?.map_lng ? (
+        <KakaoMap lat={shop.map_lat} lng={shop.map_lng} name={shop.name} address={shop.address} />
+      ) : (
+        <div className="bg-cream border-gray-light mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border">
+          <div className="text-center">
+            <MapPin size={32} strokeWidth={1.5} className="text-gold mx-auto mb-2" />
+            <p className="font-ui text-gray text-sm">지도 좌표가 설정되지 않았습니다.</p>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Shop Info */}
