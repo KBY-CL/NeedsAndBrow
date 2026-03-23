@@ -51,6 +51,11 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
           <div className="space-y-3">
             <h4 className="font-ui text-sm font-semibold tracking-wide text-white">바로가기</h4>
             <ul className="font-ui text-gray space-y-2 text-sm">
+              {shop?.instagram_url && (
+                <ExternalLink href={shop.instagram_url}>인스타그램</ExternalLink>
+              )}
+              {shop?.naver_url && <ExternalLink href={shop.naver_url}>네이버</ExternalLink>}
+              {shop?.daangn_url && <ExternalLink href={shop.daangn_url}>당근마켓</ExternalLink>}
               <FooterLink href="/gallery">갤러리</FooterLink>
               <FooterLink href="/price">가격표</FooterLink>
               <FooterLink href="/reservation">예약하기</FooterLink>
@@ -65,42 +70,6 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
               <FooterLink href="/inquiry">상담 문의</FooterLink>
               <FooterLink href="/reviews">시술 후기</FooterLink>
               <FooterLink href="/events">이벤트</FooterLink>
-              {shop?.naver_url && (
-                <li>
-                  <a
-                    href={shop.naver_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-gold-light transition-colors"
-                  >
-                    네이버
-                  </a>
-                </li>
-              )}
-              {shop?.instagram_url && (
-                <li>
-                  <a
-                    href={shop.instagram_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-gold-light transition-colors"
-                  >
-                    인스타그램
-                  </a>
-                </li>
-              )}
-              {shop?.daangn_url && (
-                <li>
-                  <a
-                    href={shop.daangn_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-gold-light transition-colors"
-                  >
-                    당근마켓
-                  </a>
-                </li>
-              )}
             </ul>
           </div>
         </div>
@@ -120,6 +89,21 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       <Link href={href} className="hover:text-gold-light transition-colors">
         {children}
       </Link>
+    </li>
+  );
+}
+
+function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <li>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-gold-light transition-colors"
+      >
+        {children}
+      </a>
     </li>
   );
 }
