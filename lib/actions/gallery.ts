@@ -1,45 +1,61 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/actions/utils';
 import type { AuthResult } from '@/lib/domain/auth/types';
-import type { ServiceCategory } from '@/types/database.types';
+import type { Gallery, ServiceCategory } from '@/types/database.types';
 
-const GallerySchema = z.object({
-  category: z.enum(['속눈썹연장', '눈썹문신', '기타']),
-  beforeUrl: z.string().url(),
-  afterUrl: z.string().url(),
-  description: z.string().max(200).optional().or(z.literal('')),
-  sortOrder: z.coerce.number().default(0),
-});
+async function uploadImage(
+  supabase: Awaited<ReturnType<typeof createServerClient>>,
+  file: File,
+  prefix: string,
+): Promise<string | null> {
+  const ext = file.name.split('.').pop() ?? 'jpg';
+  const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-export async function createGalleryItem(_: unknown, formData: FormData): Promise<AuthResult> {
-  const parsed = GallerySchema.safeParse({
-    category: formData.get('category'),
-    beforeUrl: formData.get('beforeUrl'),
-    afterUrl: formData.get('afterUrl'),
-    description: formData.get('description') || '',
-    sortOrder: formData.get('sortOrder') || 0,
+  const { error } = await supabase.storage.from('gallery').upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
   });
 
-  if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message ?? '입력값을 확인하세요.' };
-  }
+  if (error) return null;
 
+  const { data } = supabase.storage.from('gallery').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+export async function createGalleryItem(_: unknown, formData: FormData): Promise<AuthResult> {
   const { supabase, authorized } = await requireAdmin();
   if (!authorized) return { success: false, error: '관리자 권한이 필요합니다.' };
 
+  const category = formData.get('category') as Gallery['category'];
+  const description = (formData.get('description') as string) || null;
+  const beforeFile = formData.get('beforeFile') as File | null;
+  const afterFile = formData.get('afterFile') as File | null;
+
+  if (!category) return { success: false, error: '카테고리를 선택하세요.' };
+  if (!beforeFile?.size) return { success: false, error: 'Before 이미지를 선택하세요.' };
+  if (!afterFile?.size) return { success: false, error: 'After 이미지를 선택하세요.' };
+
+  const [beforeUrl, afterUrl] = await Promise.all([
+    uploadImage(supabase, beforeFile, 'before'),
+    uploadImage(supabase, afterFile, 'after'),
+  ]);
+
+  if (!beforeUrl || !afterUrl) {
+    return { success: false, error: '이미지 업로드에 실패했습니다.' };
+  }
+
   const { error } = await supabase.from('gallery').insert({
-    category: parsed.data.category,
-    before_url: parsed.data.beforeUrl,
-    after_url: parsed.data.afterUrl,
-    description: parsed.data.description || null,
-    sort_order: parsed.data.sortOrder,
+    category,
+    before_url: beforeUrl,
+    after_url: afterUrl,
+    description,
+    sort_order: 0,
   });
 
-  if (error) return { success: false, error: '갤러리 등록에 실패했습니다.' };
+  if (error) return { success: false, error: '등록에 실패했습니다.' };
 
   revalidatePath('/gallery');
   revalidatePath('/admin/gallery');

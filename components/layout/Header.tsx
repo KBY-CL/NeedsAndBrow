@@ -37,7 +37,7 @@ export function Header({ onMenuOpen }: HeaderProps) {
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-6 md:flex">
-          <NavLink href="/gallery">갤러리</NavLink>
+          <NavLink href="/gallery">Before & After</NavLink>
           <NavLink href="/reviews">후기</NavLink>
           <NavLink href="/price">가격표</NavLink>
           <NavLink href="/events">이벤트</NavLink>

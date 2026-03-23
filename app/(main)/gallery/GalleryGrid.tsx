@@ -57,7 +57,7 @@ export function GalleryGrid({ initialItems }: GalleryGridProps) {
           <div className="border-gold mx-auto h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
         </div>
       ) : items.length === 0 ? (
-        <p className="font-ui text-gray py-12 text-center text-sm">등록된 갤러리가 없습니다.</p>
+        <p className="font-ui text-gray py-12 text-center text-sm">등록된 항목이 없습니다.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (

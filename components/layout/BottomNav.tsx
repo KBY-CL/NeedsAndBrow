@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/', label: '홈', icon: Home },
-  { href: '/gallery', label: '갤러리', icon: Image },
+  { href: '/gallery', label: 'B&A', icon: Image },
   { href: '/reservation', label: '예약', icon: CalendarDays },
   { href: '/reviews', label: '후기', icon: MessageSquare },
   { href: '/mypage', label: 'MY', icon: User },

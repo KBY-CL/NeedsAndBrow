@@ -28,7 +28,7 @@ interface MobileMenuProps {
 
 const menuItems = [
   { href: '/', label: '홈', icon: Home },
-  { href: '/gallery', label: '갤러리', icon: Image },
+  { href: '/gallery', label: 'Before & After', icon: Image },
   { href: '/price', label: '가격표', icon: Tag },
   { href: '/reservation', label: '예약하기', icon: CalendarDays },
   { href: '/reviews', label: '시술 후기', icon: MessageSquare },

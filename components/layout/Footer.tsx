@@ -51,7 +51,7 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
           <div className="space-y-3">
             <h4 className="font-ui text-sm font-semibold tracking-wide text-white">바로가기</h4>
             <ul className="font-ui text-gray grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-              <FooterLink href="/gallery">갤러리</FooterLink>
+              <FooterLink href="/gallery">Before & After</FooterLink>
               <FooterLink href="/price">가격표</FooterLink>
               <FooterLink href="/reservation">예약하기</FooterLink>
               <FooterLink href="/inquiry">상담 문의</FooterLink>

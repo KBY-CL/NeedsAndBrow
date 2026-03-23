@@ -32,7 +32,7 @@ export default function HomePage() {
               href="/gallery"
               className="font-ui border-charcoal text-charcoal hover:bg-charcoal inline-flex h-12 items-center gap-2 rounded-lg border px-8 text-sm font-medium tracking-wide transition-colors hover:text-white"
             >
-              갤러리 보기
+              Before & After
               <ArrowRight size={16} strokeWidth={1.5} />
             </Link>
           </div>

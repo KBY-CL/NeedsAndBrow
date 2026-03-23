@@ -30,7 +30,7 @@ const sidebarItems: ReadonlyArray<{
   { href: '/admin/reservations', label: '예약 관리', icon: CalendarDays },
   { href: '/admin/services', label: '서비스 관리', icon: Scissors },
   { href: '/admin/time-slots', label: '시간 슬롯', icon: Clock },
-  { href: '/admin/gallery', label: '갤러리', icon: Image },
+  { href: '/admin/gallery', label: 'Before & After', icon: Image },
   { href: '/admin/reviews', label: '후기 관리', icon: MessageSquare },
   { href: '/admin/events', label: '이벤트', icon: Sparkles },
   { href: '/admin/inquiries', label: '상담 문의', icon: HelpCircle },

@@ -3,8 +3,8 @@ import { getGalleryItems } from '@/lib/actions/gallery';
 import { GalleryGrid } from './GalleryGrid';
 
 export const metadata: Metadata = {
-  title: '갤러리',
-  description: '속눈썹 연장, 반영구 시술 Before & After 갤러리',
+  title: 'Before & After',
+  description: '속눈썹 연장, 반영구 시술 Before & After',
 };
 
 export default async function GalleryPage() {
