@@ -5,15 +5,13 @@ export interface FooterShopData {
   name: string;
   phone: string;
   address: string;
-  hours: Record<string, string>;
+  hours_text: string;
   naver_url: string | null;
   instagram_url: string | null;
 }
 
 export function Footer({ shop }: { shop?: FooterShopData }) {
-  const firstHour = shop
-    ? (Object.values(shop.hours).find((v) => v !== '휴무') ?? '')
-    : '10:00 - 20:00';
+  const hoursDisplay = shop?.hours_text || '10:00 - 20:00';
 
   return (
     <footer className="bg-charcoal text-cream pb-20 md:pb-0">
@@ -39,10 +37,10 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
                 <MapPin size={14} strokeWidth={1.5} className="mt-0.5 shrink-0" />
                 <span>{shop?.address ?? '-'}</span>
               </li>
-              {firstHour && (
-                <li className="flex items-center gap-2">
-                  <Clock size={14} strokeWidth={1.5} />
-                  <span>{firstHour}</span>
+              {hoursDisplay && (
+                <li className="flex items-start gap-2">
+                  <Clock size={14} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+                  <span className="whitespace-pre-line">{hoursDisplay}</span>
                 </li>
               )}
             </ul>

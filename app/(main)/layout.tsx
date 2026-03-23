@@ -10,7 +10,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
         name: shop.name,
         phone: shop.phone,
         address: shop.address,
-        hours: (shop.hours ?? {}) as Record<string, string>,
+        hours_text: (shop.hours as Record<string, string> | null)?._text ?? '',
         naver_url: shop.kakao_url,
         instagram_url: shop.instagram_url,
       }

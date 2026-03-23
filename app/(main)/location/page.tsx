@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function LocationPage() {
   const shop = await getShopInfo();
 
-  const hours = (shop?.hours ?? {}) as Record<string, string>;
+  const hoursText = (shop?.hours as Record<string, string> | null)?._text ?? '';
 
   return (
     <div className="mx-auto max-w-screen-lg px-5 py-8 md:px-8">
@@ -78,15 +78,8 @@ export default async function LocationPage() {
             <Clock size={18} strokeWidth={1.5} className="text-gold" />
             운영 시간
           </h2>
-          {Object.keys(hours).length > 0 ? (
-            <ul className="space-y-2">
-              {Object.entries(hours).map(([day, time]) => (
-                <li key={day} className="flex items-center justify-between">
-                  <span className="font-ui text-charcoal text-sm font-medium">{day}</span>
-                  <span className="font-ui text-charcoal-light text-sm">{time}</span>
-                </li>
-              ))}
-            </ul>
+          {hoursText ? (
+            <p className="font-ui text-charcoal-light text-sm whitespace-pre-line">{hoursText}</p>
           ) : (
             <p className="font-ui text-gray text-sm">운영 시간 미등록</p>
           )}

@@ -14,16 +14,12 @@ export async function updateShopInfo(_: unknown, formData: FormData): Promise<Au
   const parkingInfo = String(formData.get('parking_info') ?? '').trim();
   const kakaoUrl = String(formData.get('kakao_url') ?? '').trim();
   const instagramUrl = String(formData.get('instagram_url') ?? '').trim();
-  const hoursRaw = String(formData.get('hours') ?? '{}').trim();
+  const hoursText = String(formData.get('hours') ?? '').trim();
 
   if (!name) return { success: false, error: '매장명을 입력하세요.' };
 
-  let hours: Record<string, string> = {};
-  try {
-    hours = JSON.parse(hoursRaw);
-  } catch {
-    return { success: false, error: '운영시간 형식이 올바르지 않습니다.' };
-  }
+  // 텍스트를 줄바꿈 기준으로 JSON 객체에 저장 (key: 줄번호, value: 텍스트)
+  const hours: Record<string, string> = { _text: hoursText };
 
   const { error } = await supabase
     .from('shop_info')
