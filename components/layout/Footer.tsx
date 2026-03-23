@@ -6,6 +6,8 @@ export interface FooterShopData {
   phone: string;
   address: string;
   hours: Record<string, string>;
+  naver_url: string | null;
+  instagram_url: string | null;
 }
 
 export function Footer({ shop }: { shop?: FooterShopData }) {
@@ -62,6 +64,30 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
               <FooterLink href="/inquiry">상담 문의</FooterLink>
               <FooterLink href="/reviews">시술 후기</FooterLink>
               <FooterLink href="/events">이벤트</FooterLink>
+              {shop?.naver_url && (
+                <li>
+                  <a
+                    href={shop.naver_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-gold-light transition-colors"
+                  >
+                    네이버
+                  </a>
+                </li>
+              )}
+              {shop?.instagram_url && (
+                <li>
+                  <a
+                    href={shop.instagram_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-gold-light transition-colors"
+                  >
+                    인스타그램
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

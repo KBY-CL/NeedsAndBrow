@@ -11,6 +11,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
         phone: shop.phone,
         address: shop.address,
         hours: (shop.hours ?? {}) as Record<string, string>,
+        naver_url: shop.kakao_url,
+        instagram_url: shop.instagram_url,
       }
     : undefined;
 
