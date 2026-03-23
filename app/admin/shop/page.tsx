@@ -21,6 +21,7 @@ export default async function AdminShopPage() {
       <h1 className="font-display text-charcoal mb-6 text-2xl">매장 정보 관리</h1>
       <div className="border-gray-light shadow-soft rounded-xl border bg-white p-6">
         <ShopEditForm
+          key={shop.updated_at}
           shop={{
             name: shop.name,
             address: shop.address,

@@ -11,7 +11,9 @@ export interface FooterShopData {
 }
 
 export function Footer({ shop }: { shop?: FooterShopData }) {
-  const firstHour = shop ? (Object.values(shop.hours)[0] ?? '') : '10:00 - 20:00';
+  const firstHour = shop
+    ? (Object.values(shop.hours).find((v) => v !== '휴무') ?? '')
+    : '10:00 - 20:00';
 
   return (
     <footer className="bg-charcoal text-cream pb-20 md:pb-0">
