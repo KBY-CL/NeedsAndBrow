@@ -23,10 +23,10 @@ export function ShopEditForm({ shop }: { shop: ShopData }) {
       <Field label="전화번호" name="phone" defaultValue={shop.phone} />
       <Field label="위치 안내" name="parking_info" defaultValue={shop.parking_info ?? ''} />
       <Field
-        label="카카오 URL"
+        label="네이버 URL"
         name="kakao_url"
         defaultValue={shop.kakao_url ?? ''}
-        placeholder="https://pf.kakao.com/..."
+        placeholder="https://map.naver.com/..."
       />
       <Field
         label="인스타그램 URL"
