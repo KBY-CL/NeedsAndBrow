@@ -29,6 +29,7 @@ export default async function AdminShopPage() {
             parking_info: shop.parking_info,
             kakao_url: shop.kakao_url,
             instagram_url: shop.instagram_url,
+            daangn_url: shop.daangn_url,
             hours_text: (shop.hours as Record<string, string> | null)?._text ?? '',
           }}
         />

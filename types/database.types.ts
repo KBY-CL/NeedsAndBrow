@@ -368,6 +368,7 @@ export type Database = {
           phone: string;
           kakao_url: string | null;
           instagram_url: string | null;
+          daangn_url: string | null;
           hours: Json;
           parking_info: string | null;
           map_lat: number | null;
@@ -381,6 +382,7 @@ export type Database = {
           phone?: string;
           kakao_url?: string | null;
           instagram_url?: string | null;
+          daangn_url?: string | null;
           hours?: Json;
           parking_info?: string | null;
           map_lat?: number | null;
@@ -394,6 +396,7 @@ export type Database = {
           phone?: string;
           kakao_url?: string | null;
           instagram_url?: string | null;
+          daangn_url?: string | null;
           hours?: Json;
           parking_info?: string | null;
           map_lat?: number | null;

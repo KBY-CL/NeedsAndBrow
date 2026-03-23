@@ -8,6 +8,7 @@ export interface FooterShopData {
   hours_text: string;
   naver_url: string | null;
   instagram_url: string | null;
+  daangn_url: string | null;
 }
 
 export function Footer({ shop }: { shop?: FooterShopData }) {
@@ -85,6 +86,18 @@ export function Footer({ shop }: { shop?: FooterShopData }) {
                     className="hover:text-gold-light transition-colors"
                   >
                     인스타그램
+                  </a>
+                </li>
+              )}
+              {shop?.daangn_url && (
+                <li>
+                  <a
+                    href={shop.daangn_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-gold-light transition-colors"
+                  >
+                    당근마켓
                   </a>
                 </li>
               )}

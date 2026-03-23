@@ -14,6 +14,7 @@ export async function updateShopInfo(_: unknown, formData: FormData): Promise<Au
   const parkingInfo = String(formData.get('parking_info') ?? '').trim();
   const kakaoUrl = String(formData.get('kakao_url') ?? '').trim();
   const instagramUrl = String(formData.get('instagram_url') ?? '').trim();
+  const daangnUrl = String(formData.get('daangn_url') ?? '').trim();
   const hoursText = String(formData.get('hours') ?? '').trim();
 
   if (!name) return { success: false, error: '매장명을 입력하세요.' };
@@ -30,6 +31,7 @@ export async function updateShopInfo(_: unknown, formData: FormData): Promise<Au
       parking_info: parkingInfo || null,
       kakao_url: kakaoUrl || null,
       instagram_url: instagramUrl || null,
+      daangn_url: daangnUrl || null,
       hours,
       updated_at: new Date().toISOString(),
     })

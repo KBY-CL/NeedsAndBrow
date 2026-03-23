@@ -12,6 +12,7 @@ interface ShopData {
   parking_info: string | null;
   kakao_url: string | null;
   instagram_url: string | null;
+  daangn_url: string | null;
   hours_text: string;
 }
 
@@ -90,6 +91,12 @@ export function ShopEditForm({ shop }: { shop: ShopData }) {
           name="instagram_url"
           defaultValue={shop.instagram_url ?? ''}
           placeholder="https://instagram.com/..."
+        />
+        <Field
+          label="당근마켓 URL"
+          name="daangn_url"
+          defaultValue={shop.daangn_url ?? ''}
+          placeholder="https://www.daangn.com/..."
         />
 
         <div>

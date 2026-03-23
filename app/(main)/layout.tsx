@@ -13,6 +13,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
         hours_text: (shop.hours as Record<string, string> | null)?._text ?? '',
         naver_url: shop.kakao_url,
         instagram_url: shop.instagram_url,
+        daangn_url: shop.daangn_url,
       }
     : undefined;
 
